@@ -1,0 +1,956 @@
+import React, { useState } from "react";
+import { 
+  FileText, Sparkles, Scale, AlertTriangle, Play, CheckSquare, 
+  Square, Calendar, ChevronRight, BookOpen, Plus, Loader2, Copy, Trash2, Edit3, X, Check, Phone, Mail
+} from "lucide-react";
+import { PrioritySector, ActionStep } from "../data";
+import { MarkdownRenderer } from "./MarkdownRenderer";
+
+// Helper to provide realistic default contact details for governmental departments
+export const getFallbackContact = (owner: string) => {
+  const clean = owner.trim();
+  if (clean.includes("एसपी क्राइम") || clean.includes("एफएसएल")) {
+    return { phone: "+91 94544 04011", email: "sp-crime.fsl@police.gov.in" };
+  }
+  if (clean.includes("प्रशिक्षण") || clean.includes("अभियोजन")) {
+    return { phone: "+91 94544 01032", email: "dig-training.pros@police.gov.in" };
+  }
+  if (clean.includes("थाना प्रभारी") || clean.includes("थानाध्यक्ष") || clean.includes("SHO") || clean.includes("एसएचओ")) {
+    return { phone: "+91 94544 02099", email: "sho-stationhead@police.gov.in" };
+  }
+  if (clean.includes("विशेष लोक अभियोजक") || clean.includes("विधिक")) {
+    return { phone: "+91 94544 01456", email: "sp-legal.prosecutor@police.gov.in" };
+  }
+  if (clean.includes("महिला सुरक्षा") || clean.includes("महिला हेल्प डेस्क") || clean.includes("महिला कल्याण")) {
+    return { phone: "+91 94544 03022", email: "nodal-womenwelfare@police.gov.in" };
+  }
+  if (clean.includes("यातायात") || clean.includes("ट्रैफिक")) {
+    return { phone: "+91 94544 01811", email: "sp-traffic@police.gov.in" };
+  }
+  if (clean.includes("किशोर पुलिस इकाई") || clean.includes("SJPU")) {
+    return { phone: "+91 94544 01533", email: "sjpu-childsafety@police.gov.in" };
+  }
+  if (clean.includes("आईजीआरएस") || clean.includes("शिकायत")) {
+    return { phone: "+91 94544 00190", email: "grievenace-cell@police.gov.in" };
+  }
+  if (clean.includes("जनसंपर्क") || clean.includes("एडिशनल एसपी")) {
+    return { phone: "+91 94544 00155", email: "pro-addlsp@police.gov.in" };
+  }
+  if (clean.includes("सीसीटीएनएस") || clean.includes("CCTNS")) {
+    return { phone: "+91 94544 01101", email: "cctns-nodal@police.gov.in" };
+  }
+  if (clean.includes("बीट") || clean.includes("चौकी")) {
+    return { phone: "+91 94544 05041", email: "beat-officer@police.gov.in" };
+  }
+  if (clean.includes("खुफिया") || clean.includes("एलआईयू") || clean.includes("LIU")) {
+    return { phone: "+91 94544 01007", email: "liu-intelligence@police.gov.in" };
+  }
+  if (clean.includes("एसपी सिटी") || clean.includes("कंट्रोल रूम")) {
+    return { phone: "+91 94544 01010", email: "spcity-control@police.gov.in" };
+  }
+  if (clean.includes("सोशल मीडिया") || clean.includes("प्रवक्ता")) {
+    return { phone: "+91 94544 01021", email: "socialmedia-desk@police.gov.in" };
+  }
+  if (clean.includes("रिजर्व पुलिस") || clean.includes("RI")) {
+    return { phone: "+91 94544 01122", email: "ri-lines@police.gov.in" };
+  }
+  if (clean.includes("साइबर") || clean.includes("म्युल")) {
+    return { phone: "+91 19300 44211", email: "cybercell-hq@police.gov.in" };
+  }
+  if (clean.includes("पासपोर्ट")) {
+    return { phone: "+91 94544 02244", email: "passport-verification@police.gov.in" };
+  }
+  if (clean.includes("एसपी प्रशासन") || clean.includes("ई-डिस्ट्रिक्ट")) {
+    return { phone: "+91 94544 00100", email: "sp-admin@police.gov.in" };
+  }
+  return { phone: "+91 94544 01112", email: "nodal-incharge@police.gov.in" };
+};
+
+interface ActiveSectorViewProps {
+  sector: PrioritySector;
+  onToggleAction: (sectorId: number, actionId: string) => void;
+  onAddCustomAction: (sectorId: number, title: string, description: string, timeline: string, owner: string, ownerPhone?: string, ownerEmail?: string) => void;
+  onDeleteAction: (sectorId: number, actionId: string) => void;
+  onEditAction: (sectorId: number, actionId: string, updated: Partial<ActionStep>) => void;
+  generatedStrategies: { [key: string]: string };
+  onSaveStrategy: (sectorId: number, scenarioKey: string, text: string) => void;
+}
+
+export function ActiveSectorView({
+  sector,
+  onToggleAction,
+  onAddCustomAction,
+  onDeleteAction,
+  onEditAction,
+  generatedStrategies,
+  onSaveStrategy
+}: ActiveSectorViewProps) {
+  // Tabs: "actions" (SOP Checklist) | "ai-advisor" (AI Advisor) | "pillars" (Pillars)
+  const [activeTab, setActiveTab] = useState<"actions" | "ai-advisor" | "pillars">("actions");
+
+  // Custom action form states
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDesc, setNewDesc] = useState("");
+  const [newTimeline, setNewTimeline] = useState("तत्काल कदम");
+  const [newOwner, setNewOwner] = useState("एसएचओ / थानाध्यक्ष");
+  const [newPhone, setNewPhone] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+
+  // Editing Action States
+  const [editingActionId, setEditingActionId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editTimeline, setEditTimeline] = useState("");
+  const [editOwner, setEditOwner] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+
+  // Notification states
+  const [activeNotification, setActiveNotification] = useState<{
+    isOpen: boolean;
+    sending: boolean;
+    owner: string;
+    phone: string;
+    email: string;
+    taskTitle: string;
+    timeline: string;
+    success: boolean;
+  } | null>(null);
+
+  const triggerNotification = (taskTitle: string, owner: string, phone: string, email: string, timeline: string) => {
+    setActiveNotification({
+      isOpen: true,
+      sending: true,
+      owner,
+      phone,
+      email,
+      taskTitle,
+      timeline,
+      success: false
+    });
+
+    // Simulated transmission over the government secure gateway
+    setTimeout(() => {
+      setActiveNotification(prev => prev ? { ...prev, sending: false, success: true } : null);
+    }, 2000);
+  };
+
+  // AI strategy formulation states
+  const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
+  const [localDetails, setLocalDetails] = useState("");
+  const [loadingAI, setLoadingAI] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  // Current scenario strategy key
+  const activeScenario = sector.aiScenarios[selectedScenarioIndex];
+  const strategyStorageKey = `s_${sector.id}_sc_${selectedScenarioIndex}`;
+  const savedStrategyHTML = generatedStrategies[strategyStorageKey] || "";
+
+  // Handle adding custom action subtask
+  const handleAddSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+
+    const fallback = getFallbackContact(newOwner);
+    const resolvedPhone = newPhone.trim() || fallback.phone;
+    const resolvedEmail = newEmail.trim() || fallback.email;
+
+    onAddCustomAction(sector.id, newTitle, newDesc, newTimeline, newOwner, resolvedPhone, resolvedEmail);
+    
+    // Reset inputs
+    setNewTitle("");
+    setNewDesc("");
+    setNewTimeline("तत्काल कदम");
+    setNewOwner("एसएचओ / थानाध्यक्ष");
+    setNewPhone("");
+    setNewEmail("");
+    setShowAddForm(false);
+
+    // Auto-trigger message transmission!
+    triggerNotification(newTitle, newOwner, resolvedPhone, resolvedEmail, newTimeline);
+  };
+
+  // Setup Edit Mode
+  const startEditing = (action: ActionStep) => {
+    const fallback = getFallbackContact(action.owner);
+    setEditingActionId(action.id);
+    setEditTitle(action.title);
+    setEditDesc(action.description);
+    setEditTimeline(action.timeline);
+    setEditOwner(action.owner);
+    setEditPhone(action.ownerPhone || fallback.phone);
+    setEditEmail(action.ownerEmail || fallback.email);
+  };
+
+  const saveEdit = () => {
+    if (!editTitle.trim()) return;
+    onEditAction(sector.id, editingActionId!, {
+      title: editTitle,
+      description: editDesc,
+      timeline: editTimeline,
+      owner: editOwner,
+      ownerPhone: editPhone,
+      ownerEmail: editEmail
+    });
+    setEditingActionId(null);
+
+    // Auto-trigger message transmission!
+    triggerNotification(editTitle, editOwner, editPhone, editEmail, editTimeline);
+  };
+
+  // Call API for Gemini strategy formulation
+  const handleGenerateAIStrategy = async () => {
+    setLoadingAI(true);
+    setAiError(null);
+    setStatusMessage("गृह मंत्रालय SOP डेटाबेस का मिलान किया जा रहा है...");
+    
+    // Stagger loading messages for nice immersive feel
+    const intervals = [
+      setTimeout(() => setStatusMessage("स्थानीय भौगोलिक व जनसांख्यिकी इनपुट का विश्लेषण जारी है..."), 1200),
+      setTimeout(() => setStatusMessage("AI सलाहकार आपके राजकीय बल के अनुसार SOP संकलित कर रहा है..."), 3000),
+    ];
+
+    try {
+      const response = await fetch("/api/generate-strategy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sectorId: sector.id,
+          title: sector.title,
+          scenario: activeScenario.label + ": " + activeScenario.context,
+          userInput: localDetails
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "रणनीति फ़ॉर्म्युलेट करने में समस्या आई।");
+      }
+
+      onSaveStrategy(sector.id, strategyStorageKey, data.strategy);
+    } catch (err: any) {
+      console.error(err);
+      setAiError(err.message || "सर्वर से कनेक्ट करने में अज्ञात त्रुटि। कृपया पुनः प्रयास करें।");
+    } finally {
+      intervals.forEach(clearTimeout);
+      setLoadingAI(false);
+      setStatusMessage("");
+    }
+  };
+
+  // Copy AI strategy to clipboard
+  const handleCopyStrategy = () => {
+    if (!savedStrategyHTML) return;
+    navigator.clipboard.writeText(savedStrategyHTML);
+    alert("रणनीति कोड कॉपी कर लिया गया है। इसे आप अपनी डॉक फाइल या ईमेल में पेस्ट कर सकते हैं।");
+  };
+
+  // Statistics calculation for active sector
+  const totalSteps = sector.defaultActions.length;
+  const completedSteps = sector.defaultActions.filter(a => a.completed).length;
+  const progressPercent = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
+
+  return (
+    <div className="bg-white border border-slate-200/90 rounded-2xl select-none text-slate-800 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col h-full min-h-[600px] relative animate-fadeIn">
+      
+      {/* Decorative Blue/Golden Corner lines */}
+      <div className="absolute top-0 right-0 p-4 pointer-events-none select-none z-10">
+        <div className="w-16 h-16 border-r border-t border-blue-500/15"></div>
+      </div>
+
+      {/* Active Sector Banner Section */}
+      <div className="bg-slate-50/50 p-5 sm:p-6 border-b border-slate-200/60">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-[9px] text-blue-700 font-extrabold uppercase tracking-widest bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-md">
+              कार्ययोजना सेक्टर #{sector.id}
+            </span>
+            <h2 className="text-xl sm:text-2xl font-serif italic text-slate-900 mt-1.5 tracking-tight flex items-center gap-2">
+              {sector.title}
+            </h2>
+            <p className="text-[10px] text-slate-400 font-mono tracking-wider mt-0.5 uppercase">
+              {sector.englishTitle}
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-150 p-3 rounded-xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-sm">
+            <div className="text-right">
+              <span className="text-[9px] text-slate-450 uppercase font-bold block tracking-wider">
+                लक्ष्य पूरा इंडेक्स
+              </span>
+              <span className={`text-sm font-mono font-black ${progressPercent === 100 ? "text-emerald-600" : "text-blue-600"}`}>
+                {progressPercent}%
+              </span>
+            </div>
+            <div className="w-10 h-10 relative flex items-center justify-center">
+              <svg className="w-10 h-10 transform -rotate-90">
+                <circle cx="20" cy="20" r="16" className="text-slate-100" strokeWidth="2.5" fill="transparent" stroke="currentColor"/>
+                <circle cx="20" cy="20" r="16" 
+                  className={progressPercent === 100 ? "text-emerald-550" : "text-blue-500"} 
+                  strokeWidth="2.5" 
+                  fill="transparent" 
+                  strokeDasharray={100}
+                  strokeDashoffset={100 - progressPercent}
+                  strokeLinecap="round"
+                  stroke="currentColor"
+                 />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-slate-600 text-sm leading-relaxed mt-4 bg-white p-3.5 rounded-xl border border-slate-200/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+          {sector.description}
+        </p>
+      </div>
+
+      {/* Switch Workspace Tabs */}
+      <div className="flex bg-slate-50 border-b border-slate-200/80 px-2 gap-1.5 flex-shrink-0">
+        <button
+          onClick={() => setActiveTab("actions")}
+          className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+            activeTab === "actions"
+              ? "border-blue-600 text-blue-700 bg-white"
+              : "border-transparent text-slate-400 hover:text-slate-700"
+          }`}
+        >
+          <CheckSquare className="w-4 h-4 text-blue-600" />
+          <span>राजकीय क्रियान्वयन चेकलिस्ट</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("ai-advisor")}
+          className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+            activeTab === "ai-advisor"
+              ? "border-blue-600 text-blue-700 bg-white"
+              : "border-transparent text-slate-400 hover:text-slate-700"
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-blue-600" />
+          <span>AI प्रशासनिक रणनीति सहायक</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("pillars")}
+          className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+            activeTab === "pillars"
+              ? "border-blue-600 text-blue-700 bg-white"
+              : "border-transparent text-slate-400 hover:text-slate-700"
+          }`}
+        >
+          <BookOpen className="w-4 h-4 text-blue-600" />
+          <span>मुख्य प्रशासनिक स्तंभ ({sector.pillars.length})</span>
+        </button>
+      </div>
+
+      {/* Main Workspace Work Area */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+        
+        {/* TAB 1: SOP ACTION CHECKLIST */}
+        {activeTab === "actions" && (
+          <div className="space-y-4">
+            
+            <div className="flex items-center justify-between gap-4 pb-2">
+              <div>
+                <h3 className="font-extrabold text-sm text-slate-800">
+                  प्रस्तावित बुनियादी विभागीय जिम्मेदारियां (Operational Targets)
+                </h3>
+                <p className="text-[10px] text-blue-600 font-extrabold block uppercase mt-0.5 tracking-wider">
+                  SOP Checklist & Add-ons
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>नया कार्य जोड़ें</span>
+              </button>
+            </div>
+
+            {/* Form to append Custom Actions */}
+            {showAddForm && (
+              <form onSubmit={handleAddSubmit} className="bg-[#fafafa] border border-slate-200 rounded-xl p-4 space-y-3 animate-fadeIn shadow-sm">
+                <h4 className="text-xs font-black text-blue-700 uppercase tracking-wider">
+                  प्रशासनिक कार्य जोड़ें (Add Custom SOP Step)
+                </h4>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">शीर्षक *</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="जैसे: संवेदनशील बूथों का पुलिस बल द्वारा पैदल मार्च..."
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">जिम्मेदार इकाई *</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={newOwner}
+                      onChange={(e) => setNewOwner(e.target.value)}
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर (SMS हेतु)</label>
+                    <input 
+                      type="tel"
+                      placeholder="जैसे: +91 94544 02099 (छोड़ने पर स्वतः डिफ़ॉल्ट)"
+                      value={newPhone}
+                      onChange={(e) => setNewPhone(e.target.value)}
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी ईमेल आईडी (Email हेतु)</label>
+                    <input 
+                      type="email"
+                      placeholder="जैसे: sho@police.gov.in (छोड़ने पर स्वतः डिफ़ॉल्ट)"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">विस्तृत व्याख्या (विवरण)</label>
+                  <textarea 
+                    placeholder="एसओपी के अंतर्गत किए जाने वाले कार्यों का संक्षिप्त प्रशासनिक विवरण..."
+                    value={newDesc}
+                    onChange={(e) => setNewDesc(e.target.value)}
+                    rows={2}
+                    className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50 resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">समय सीमा:</label>
+                    <input 
+                      type="text" 
+                      value={newTimeline}
+                      onChange={(e) => setNewTimeline(e.target.value)}
+                      className="bg-white border border-slate-200 px-2 py-1 rounded-lg text-xs text-slate-850 focus:outline-none w-28 placeholder-slate-400 focus:border-blue-500/50"
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button 
+                      type="button" 
+                      onClick={() => setShowAddForm(false)}
+                      className="px-3 py-1.5 text-xs font-semibold text-slate-450 bg-transparent hover:text-slate-800"
+                    >
+                      रद्द करें
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="px-3.5 py-1.5 text-xs font-black bg-blue-600 text-white hover:bg-blue-500 rounded-lg shadow-sm cursor-pointer"
+                    >
+                      सुरक्षित करें
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+
+            {/* Steps Container */}
+            <div className="space-y-3">
+              {sector.defaultActions.map((action) => {
+                const isEditing = editingActionId === action.id;
+
+                return (
+                  <div 
+                    key={action.id}
+                    className={`border rounded-xl p-4 transition-all duration-300 ${
+                      action.completed 
+                        ? "bg-[#fafafa]/80 border-slate-200/80 opacity-80" 
+                        : "bg-white border-slate-200/80 hover:border-blue-500/20 hover:shadow-md shadow-sm"
+                    }`}
+                  >
+                    {isEditing ? (
+                      /* Editing form overlay within card */
+                      <div className="space-y-3 animate-fadeIn">
+                        <div className="flex items-center justify-between pb-1 border-b border-slate-150">
+                          <span className="text-[10px] text-blue-700 font-extrabold uppercase tracking-wider">SOP संपादित करें</span>
+                          <button onClick={() => setEditingActionId(null)} className="text-slate-450 hover:text-slate-805 p-1">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <input 
+                            type="text"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg text-xs font-bold text-[#0f172a]"
+                            placeholder="कार्य शीर्षक"
+                          />
+                          <textarea 
+                            value={editDesc}
+                            onChange={(e) => setEditDesc(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg text-xs text-slate-650"
+                            rows={2}
+                            placeholder="कार्य विवरण"
+                          />
+
+                          {/* Contact edit fields inside card */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div className="space-y-0.5">
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर</span>
+                              <input 
+                                type="tel"
+                                value={editPhone}
+                                onChange={(e) => setEditPhone(e.target.value)}
+                                className="w-full bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-lg text-xs text-slate-700 font-mono"
+                                placeholder="फ़ोन नम्बर"
+                              />
+                            </div>
+                            <div className="space-y-0.5">
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी ईमेल</span>
+                              <input 
+                                type="email"
+                                value={editEmail}
+                                onChange={(e) => setEditEmail(e.target.value)}
+                                className="w-full bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-lg text-xs text-slate-700 font-mono"
+                                placeholder="ईमेल आईडी"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                          <div className="flex gap-2.5">
+                            <input 
+                              type="text"
+                              value={editTimeline}
+                              onChange={(e) => setEditTimeline(e.target.value)}
+                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-28"
+                              placeholder="समय सीमा"
+                            />
+                            <input 
+                              type="text"
+                              value={editOwner}
+                              onChange={(e) => setEditOwner(e.target.value)}
+                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-44"
+                              placeholder="स्वामित्व विभाग"
+                            />
+                          </div>
+
+                          <button 
+                            type="button"
+                            onClick={saveEdit}
+                            className="flex items-center gap-1 bg-green-600 hover:bg-green-500 px-3 py-1 text-xs font-bold rounded-lg text-white font-mono"
+                          >
+                            <Check className="w-3 h-3" />
+                            <span>सुरक्षित करें</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Traditional View Card */
+                      <div className="flex items-start gap-3.5">
+                        {/* Done toggle checkbox button */}
+                        <button
+                          onClick={() => onToggleAction(sector.id, action.id)}
+                          className="mt-0.5 hover:scale-105 transition-transform flex-shrink-0 cursor-pointer text-slate-400 hover:text-blue-600"
+                        >
+                          {action.completed ? (
+                            <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg border border-emerald-250">
+                              <Check className="w-4 h-4 text-emerald-600 stroke-[3]" />
+                            </div>
+                          ) : (
+                            <div className="p-1.5 bg-slate-50 text-slate-400 rounded-lg border border-slate-200">
+                              <div className="w-4 h-4 rounded" />
+                            </div>
+                          )}
+                        </button>
+
+                        <div className="flex-1 space-y-1">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                              <h4 className={`text-sm font-extrabold leading-snug tracking-tight ${
+                                action.completed ? "text-slate-400 line-through font-normal" : "text-slate-800"
+                              }`}>
+                                {action.title}
+                              </h4>
+                              {action.isCustom && (
+                                <span className="text-[9px] font-black uppercase text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200/60 inline-block mt-1">
+                                  नागरिक/स्थानीय अनुकूलित एसओपी
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Badge actions tools */}
+                            <div className="flex items-center gap-2">
+                              {/* Edit triggers */}
+                              <button 
+                                onClick={() => startEditing(action)}
+                                className="p-1 rounded text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition-all cursor-pointer"
+                                title="कार्य संपादित करें"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Deletion triggers with custom trash icon */}
+                              <button 
+                                onClick={() => onDeleteAction(sector.id, action.id)}
+                                className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer"
+                                title="कार्य हटाएँ"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          <p className={`text-xs leading-relaxed ${
+                            action.completed ? "text-slate-400" : "text-slate-600"
+                          }`}>
+                            {action.description}
+                          </p>
+
+                          {/* Secondary facts row */}
+                          <div className="flex flex-wrap items-center gap-2.5 pt-1 text-[11px] font-bold text-slate-400">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                              <span className="text-slate-400 font-medium">अनुमानित लक्ष्य:</span>
+                              <span className="text-blue-600 font-extrabold">{action.timeline}</span>
+                            </span>
+                            <span className="text-slate-200 font-normal opacity-40">•</span>
+                            <span className="flex items-center gap-1">
+                              <Scale className="w-3.5 h-3.5 text-slate-400" />
+                              <span className="text-slate-400 font-medium pb-px">नोडल विभाग / प्रभारी:</span>
+                              <span className="text-slate-750 font-black">{action.owner}</span>
+                            </span>
+                            <span className="text-slate-200 font-normal opacity-40">•</span>
+                            <button
+                              onClick={() => {
+                                const fb = getFallbackContact(action.owner);
+                                triggerNotification(
+                                  action.title,
+                                  action.owner,
+                                  action.ownerPhone || fb.phone,
+                                  action.ownerEmail || fb.email,
+                                  action.timeline
+                                );
+                              }}
+                              className="flex items-center gap-1 justify-center bg-blue-50/80 text-blue-700 border border-blue-200 hover:bg-blue-600 hover:text-white px-2 py-0.5 rounded text-[10px] font-black transition-all cursor-pointer h-5.5 shadow-xs"
+                              title="प्रभारी को संदेश प्रेषित करें"
+                            >
+                              <span>संसूचना भेजें 📱</span>
+                            </button>
+                          </div>
+
+                          {/* Contact Info Details row */}
+                          <div className="text-[10px] font-mono text-slate-500 bg-[#fafafa] hover:bg-slate-100 border border-slate-200/50 p-2 rounded-lg flex flex-wrap items-center gap-x-4 gap-y-1 w-fit transition-colors">
+                            <span className="flex items-center gap-1 font-semibold text-blue-700">
+                              <Phone className="w-3 h-3 text-blue-600" /> 
+                              <span>{action.ownerPhone || getFallbackContact(action.owner).phone}</span>
+                            </span>
+                            <span className="text-slate-300 hidden sm:inline">|</span>
+                            <span className="flex items-center gap-1 font-semibold text-blue-700">
+                              <Mail className="w-3 h-3 text-blue-600" /> 
+                              <span>{action.ownerEmail || getFallbackContact(action.owner).email}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {activeTab === "ai-advisor" && (
+          <div className="space-y-5">
+            <div className="bg-blue-50/60 border border-blue-150 p-4 rounded-xl flex items-start gap-3">
+              <Sparkles className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <h4 className="text-xs font-black text-blue-800 uppercase tracking-wider">
+                  AI स्मार्ट पुलिसिंग रणनीति विकासक
+                </h4>
+                <p className="text-xs text-slate-650 leading-relaxed">
+                  इस प्राथमिकता विषय पर एक विस्तृत और स्थानीय विनिर्देशों के अनुरूप राजकीय SOP / नीति गाइड जारी करने के लिए संदर्भ परिदृश्य चुनें और AI कमांड सक्रिय करें।
+                </p>
+              </div>
+            </div>
+
+            {/* Strategy Area Selector */}
+            <div className="space-y-3">
+              <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider block">
+                १. संदर्भ विशिष्ट रणनीतिक परिदृश्य (Select Context Template):
+              </label>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {sector.aiScenarios.map((sc, scIdx) => (
+                  <button
+                    key={scIdx}
+                    onClick={() => setSelectedScenarioIndex(scIdx)}
+                    className={`p-3 text-left rounded-xl border transition-all text-xs flex flex-col justify-between h-24 cursor-pointer ${
+                      selectedScenarioIndex === scIdx 
+                        ? "bg-blue-600 border-blue-700 text-white shadow-md shadow-blue-500/10" 
+                        : "bg-slate-50 border-slate-200 hover:border-blue-300 text-slate-600 hover:text-blue-900"
+                    }`}
+                  >
+                    <span className={`font-bold ${selectedScenarioIndex === scIdx ? "text-white" : "text-blue-900"}`}>
+                      {sc.label}
+                    </span>
+                    <span className={`text-[10px] line-clamp-2 leading-snug mt-1 ${selectedScenarioIndex === scIdx ? "text-blue-100" : "text-slate-450"}`}>
+                      {sc.context}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Extra inputs form */}
+            <div className="space-y-2">
+              <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider block">
+                २. स्थानीय पुलिस बल एवं अतिरिक्त भौगोलिक विनिर्देश (Optional Local Details):
+              </label>
+              <textarea
+                value={localDetails}
+                onChange={(e) => setLocalDetails(e.target.value)}
+                rows={3}
+                placeholder={activeScenario.placeholder || "जैसे: थाना क्षेत्र में 10 संवेदनशील स्थान हैं, हमारे पास गश्ती हेतु केवल 2 गाड़ियां व 15 कांस्टेबल हैं। बजटीय सहायता मध्यम है।"}
+                className="w-full bg-white border border-slate-200 p-3 rounded-xl text-xs text-slate-850 placeholder-slate-400 focus:outline-none focus:border-blue-500/50 resize-none hover:border-slate-300 transition-all shadow-sm"
+              />
+            </div>
+
+            {/* Run button */}
+            <button
+              onClick={handleGenerateAIStrategy}
+              disabled={loadingAI}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 border border-blue-700 p-3.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-blue-650/15"
+            >
+              {loadingAI ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>SOP जनरेट की जा रही है...</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 text-white fill-current" />
+                  <span>राजकीय विधिक रणनीति तैयार करें (Formulate AI Strategy)</span>
+                </>
+              )}
+            </button>
+
+            {/* AI Generation response board */}
+            <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-55/40 min-h-[150px] relative shadow-sm">
+              {loadingAI ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center space-y-3 bg-white/95 px-4 text-center">
+                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-slate-800">{statusMessage}</p>
+                    <p className="text-[9px] text-[#2563eb] uppercase tracking-widest leading-none mt-1">
+                      Powered by Gemini 3.5
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+
+              {aiError && (
+                <div className="p-4 bg-red-50 border-b border-red-150 text-red-600 flex items-start gap-2 text-xs">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-extrabold uppercase block tracking-wider mb-0.5">तकनीकी त्रुटि</span>
+                    <span>{aiError}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Renders strategy markdown */}
+              {savedStrategyHTML ? (
+                <div className="p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <FileText className="text-blue-600 w-4 h-4" />
+                      <span className="text-xs font-extrabold text-blue-900 uppercase tracking-wider">
+                        राजकीय नीति ड्राफ्ट: {activeScenario.label}
+                      </span>
+                    </div>
+                    
+                    <button
+                      onClick={handleCopyStrategy}
+                      className="text-xs font-bold text-blue-700 hover:text-blue-800 bg-white px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>कॉपी करें</span>
+                    </button>
+                  </div>
+
+                  <div className="prose max-w-none text-slate-850 markdown-body">
+                    <MarkdownRenderer content={savedStrategyHTML} />
+                  </div>
+                </div>
+              ) : (
+                !loadingAI && (
+                  <div className="flex flex-col items-center justify-center p-8 text-center text-slate-400 h-full mt-4">
+                    <Sparkles className="w-8 h-8 text-blue-200 mb-2" />
+                    <p className="text-xs font-semibold leading-normal">
+                      योजना प्रयोक्ता इनपुट दर्ज कर रणनीति तैयार करें। <br />
+                      तैयार की गई रणनीति इस बोर्ड पर प्रदर्शित की जाएगी।
+                    </p>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: THREE KEY STRENGTH PILLARS */}
+        {activeTab === "pillars" && (
+          <div className="space-y-4">
+            <h3 className="font-extrabold text-sm text-slate-800">
+              रणनीति को सफलीभूत बनाने वाले प्रशासनिक मुख्य स्तंभ (Key Pillars)
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {sector.pillars.map((pillar, idx) => (
+                <div key={idx} className="bg-slate-50/50 border border-slate-200/60 p-5 rounded-2xl space-y-3 flex flex-col justify-between shadow-sm hover:border-blue-200 transition-all duration-300">
+                  <div className="space-y-2">
+                    <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-250/60 flex items-center justify-center text-blue-700 text-sm font-black">
+                      0{idx + 1}
+                    </div>
+                    <h4 className="font-bold text-sm text-slate-900">{pillar.title}</h4>
+                    <p className="text-xs text-slate-650 leading-relaxed">{pillar.description}</p>
+                  </div>
+                  <div className="pt-2">
+                    <div className="w-full bg-slate-200/60 h-1 rounded-full overflow-hidden">
+                      <div className="bg-blue-600 h-full w-2/3" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* Floating Status Dispatch Console Overlay */}
+      {activeNotification && activeNotification.isOpen && (
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn select-none">
+          <div className="bg-white border border-slate-200/90 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl p-5 space-y-4 animate-scaleUp">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-xs sm:text-sm text-slate-800">विभागीय संसूचन प्रणाली (Notification)</h3>
+                  <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider">SMS & Email Dispatch Console</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setActiveNotification(null)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50 transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div>
+              {activeNotification.sending ? (
+                <div className="space-y-4 py-6 text-center">
+                  <Loader2 className="w-10 h-10 text-blue-600 animate-spin mx-auto stroke-[2.5]" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-black text-slate-700 animate-pulse">सुरक्षित गेटवे द्वारा संसूचन संदेश भेजा जा रहा है...</p>
+                    <p className="text-[10px] text-slate-400 font-mono">Connecting MHA Telecom & NIC SMTP Gateway...</p>
+                  </div>
+                  {/* Simulated progress checklist */}
+                  <div className="bg-slate-50 rounded-xl p-3 text-left space-y-1.5 font-mono text-[9px] text-slate-550 border border-slate-200/50 max-w-xs mx-auto">
+                    <div className="flex items-center gap-2 text-emerald-600">
+                      <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600 flex-shrink-0" />
+                      <span>नोडल नेटवर्क कनेक्शन सुरक्षित...</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-emerald-600">
+                      <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600 flex-shrink-0" />
+                      <span>राजकीय गेटवे अधिप्रमाणन संपन्न...</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-600 animate-pulse">
+                      <Loader2 className="w-3 h-3 animate-spin flex-shrink-0" />
+                      <span>एसएमएस एवं ईमेल पैकेट प्रेषित किया जा रहा है...</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Success Icon */}
+                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded-full border border-emerald-100 flex items-center justify-center w-12 h-12 mx-auto animate-bounce shadow-sm">
+                    <Check className="w-6 h-6 stroke-[3]" />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <p className="text-sm font-black text-emerald-700">संसूचना सफलतापूर्वक प्रेषित!</p>
+                    <p className="text-xs text-slate-550 leading-normal">
+                      नियुक्त नोडल प्रभारी <span className="font-extrabold text-blue-700">{activeNotification.owner}</span> को कार्यभार सौंपने सम्बन्धी संदेश भेज दिया गया है।
+                    </p>
+                  </div>
+
+                  {/* Messages Sent Dashboard */}
+                  <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
+                    {/* SMS */}
+                    <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl space-y-2">
+                      <div className="flex flex-wrap items-center justify-between gap-1 text-[9.5px] font-black text-blue-700 uppercase tracking-wider pb-1 border-b border-slate-200">
+                        <span>📱 मोबाइल एसएमएस (SMS DELIVERED)</span>
+                        <span className="font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-150">{activeNotification.phone}</span>
+                      </div>
+                      <p className="text-xs text-slate-650 leading-relaxed font-sans italic bg-white p-2 rounded border border-slate-100">
+                        "प्रिय {activeNotification.owner}, आपको नवीन विधिक कार्यभार दिया गया है: <strong className="text-slate-800 font-extrabold">{activeNotification.taskTitle}</strong>। समय सीमा: <strong>{activeNotification.timeline}</strong>। तत्काल संज्ञान लें। - जिला पुलिस कप्तान कार्यालय।"
+                      </p>
+                    </div>
+
+                    {/* Email */}
+                    <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl space-y-2">
+                      <div className="flex flex-wrap items-center justify-between gap-1 text-[9.5px] font-black text-blue-700 uppercase tracking-wider pb-1 border-b border-slate-200">
+                        <span>✉️ राजकीय ईमेल (EMAIL DISPATCHED)</span>
+                        <span className="font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-150">{activeNotification.email}</span>
+                      </div>
+                      <div className="text-[11px] text-slate-650 leading-normal font-sans bg-white p-2.5 rounded border border-slate-100 space-y-1">
+                        <p className="font-black text-slate-800 border-b border-dashed border-slate-150 pb-0.5">विषय: नवीन राजकीय कार्यभार आवंटन</p>
+                        <p className="pt-0.5 text-slate-550 italic leading-snug">
+                          महोदय,<br />
+                          आपको पुलिस विभाग योजना के तहत निम्नलिखित प्रशासनिक जिम्मेदारी का प्रभार सौंपा गया है:<br />
+                          📌 <strong>{activeNotification.taskTitle}</strong><br />
+                          ⏱️ समय सीमा: <strong>{activeNotification.timeline}</strong><br /><br />
+                          कृपया संबंधित कार्य का त्वरित समयबद्ध क्रियान्वयन सुनिश्चित करें। - पुलिस कप्तान।
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      onClick={() => setActiveNotification(null)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-md shadow-blue-500/10"
+                    >
+                      सत्यापित किया (Ok, Confirm)
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}

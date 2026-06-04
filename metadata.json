@@ -1,0 +1,6 @@
+{
+  "name": "Smart Policing Action Planner",
+  "description": "स्मार्ट पुलिसिंग कार्ययोजना और रणनीति डैशबोर्ड - उत्तरदायित्व, सुरक्षा और आधुनिक तकनीक आधारित रणनीतिक प्रबंधन योजनाकार",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
