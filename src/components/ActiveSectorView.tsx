@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { 
   FileText, Sparkles, Scale, AlertTriangle, Play, CheckSquare, 
-  Square, Calendar, ChevronRight, BookOpen, Plus, Loader2, Copy, Trash2, Edit3, X, Check, Phone, Mail
+  Square, Calendar, ChevronRight, BookOpen, Plus, Loader2, Copy, Trash2, Edit3, X, Check, Phone, Mail,
+  Key
 } from "lucide-react";
+import { GoogleGenAI } from "@google/genai";
 import { PrioritySector, ActionStep } from "../data";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
@@ -142,6 +144,14 @@ export function ActiveSectorView({
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini_api_key") || "");
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+
+  const saveApiKey = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem("gemini_api_key", key);
+    setShowApiKeyInput(false);
+  };
 
   // Current scenario strategy key
   const activeScenario = sector.aiScenarios[selectedScenarioIndex];
@@ -200,8 +210,15 @@ export function ActiveSectorView({
     triggerNotification(editTitle, editOwner, editPhone, editEmail, editTimeline);
   };
 
-  // Call API for Gemini strategy formulation
+  // Call Gemini directly from browser (no backend needed — works on GitHub Pages)
   const handleGenerateAIStrategy = async () => {
+    const key = apiKey.trim();
+    if (!key) {
+      setShowApiKeyInput(true);
+      setAiError("कृपया पहले अपना Gemini API Key दर्ज करें। Google AI Studio से निःशुल्क key प्राप्त करें: https://aistudio.google.com/apikey");
+      return;
+    }
+
     setLoadingAI(true);
     setAiError(null);
     setStatusMessage("गृह मंत्रालय SOP डेटाबेस का मिलान किया जा रहा है...");
@@ -213,27 +230,42 @@ export function ActiveSectorView({
     ];
 
     try {
-      const response = await fetch("/api/generate-strategy", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sectorId: sector.id,
-          title: sector.title,
-          scenario: activeScenario.label + ": " + activeScenario.context,
-          userInput: localDetails
-        })
+      const ai = new GoogleGenAI({ apiKey: key });
+
+      const prompt = `आप भारत के सर्वोच्च पुलिस प्रशासन अधिकारी (Director General of Police - DGP) और स्मार्ट पुलिसिंग मामलों के मुख्य नीति रणनीतिकार हैं।
+
+आपको निम्नलिखित पुलिसिंग/सुरक्षा प्राथमिक क्षेत्र पर एक अत्यंत व्यापक, व्यावहारिक, संहिताबद्ध, और जमीनी स्तर पर क्रियान्वयन योग्य कार्ययोजना (SOP) तथा रणनीति रोडमैप तैयार करना है:
+
+प्राथमिकता क्षेत्र: "${sector.title}" (क्रम संख्या: ${sector.id})
+चयनित संदर्भ/परिदृश्य: "${activeScenario.label}: ${activeScenario.context}"
+उपयोगकर्ता द्वारा विशेष स्थानीय विवरण: "${localDetails || "कोई अतिरिक्त विवरण नहीं दिया गया।"}"
+
+कृपया निम्नलिखित संरचित शीर्षकों के अंतर्गत पूरी गंभीरता और आधिकारिक भाषा में कार्ययोजना तैयार करें (प्रतिक्रिया केवल हिंदी भाषा में हो, और सुंदर व स्पष्ट मार्कडाउन संरचना का उपयोग करें):
+
+### 🎯 १. मुख्य रणनीतिक उद्देश्य (Strategic Objectives)
+### 🚀 २. क्रियान्वयन योजना (Phase-wise Action Plan)
+### 💻 ३. AI, डिजिटल तकनीक एवं तकनीकी समाधान
+### ⚠️ ४. संभावित प्रशासनिक बाधाएं एवं उनका ठोस समाधान
+### 📊 ५. कार्य-सफलता मापदंड (KPIs)
+
+नोट: प्रतिक्रिया सीधे कार्ययोजना शीर्षक से शुरू करें।`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: prompt,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "रणनीति फ़ॉर्म्युलेट करने में समस्या आई।");
-      }
-
-      onSaveStrategy(sector.id, strategyStorageKey, data.strategy);
+      const generatedText = response.text;
+      onSaveStrategy(sector.id, strategyStorageKey, generatedText || "");
     } catch (err: any) {
       console.error(err);
-      setAiError(err.message || "सर्वर से कनेक्ट करने में अज्ञात त्रुटि। कृपया पुनः प्रयास करें।");
+      const msg = err?.message || "";
+      if (msg.includes("API_KEY_INVALID") || msg.includes("401")) {
+        setAiError("API Key अमान्य है। कृपया सही Gemini API Key दर्ज करें।");
+        setShowApiKeyInput(true);
+      } else {
+        setAiError(msg || "रणनीति जनरेट करने में अज्ञात त्रुटि हुई।");
+      }
     } finally {
       intervals.forEach(clearTimeout);
       setLoadingAI(false);
@@ -677,6 +709,54 @@ export function ActiveSectorView({
         )}
         {activeTab === "ai-advisor" && (
           <div className="space-y-5">
+            {/* API Key Section */}
+            <div className={`border rounded-xl p-3.5 flex items-center justify-between gap-3 ${apiKey ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'}`}>
+              <div className="flex items-center gap-2.5">
+                <Key className={`w-4 h-4 flex-shrink-0 ${apiKey ? 'text-emerald-600' : 'text-amber-600'}`} />
+                <div>
+                  <p className={`text-xs font-black uppercase tracking-wider ${apiKey ? 'text-emerald-700' : 'text-amber-700'}`}>
+                    {apiKey ? '✅ Gemini API Key सेट है' : '⚠️ Gemini API Key आवश्यक है'}
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {apiKey ? `Key: ${'•'.repeat(8)}${apiKey.slice(-4)}` : 'AI रणनीति के लिए Google AI Studio से निःशुल्क Key लें'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowApiKeyInput(!showApiKeyInput)}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg border transition-all cursor-pointer bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
+              >
+                {apiKey ? 'बदलें' : 'Key दर्ज करें'}
+              </button>
+            </div>
+
+            {/* API Key Input Form */}
+            {showApiKeyInput && (
+              <div className="bg-white border border-blue-200 rounded-xl p-4 space-y-3 animate-fadeIn">
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  <strong>Gemini API Key कहाँ से लें?</strong> → <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">aistudio.google.com/apikey</a> पर जाएं → "Create API Key" → Copy करें
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    placeholder="AIza... (अपना API Key यहाँ paste करें)"
+                    defaultValue={apiKey}
+                    id="gemini-key-input"
+                    className="flex-1 bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-xs font-mono focus:outline-none focus:border-blue-400"
+                  />
+                  <button
+                    onClick={() => {
+                      const el = document.getElementById('gemini-key-input') as HTMLInputElement;
+                      if (el?.value.trim()) saveApiKey(el.value.trim());
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white text-xs font-black rounded-lg hover:bg-blue-700 cursor-pointer"
+                  >
+                    सहेजें
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="bg-blue-50/60 border border-blue-150 p-4 rounded-xl flex items-start gap-3">
               <Sparkles className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
@@ -758,7 +838,7 @@ export function ActiveSectorView({
                   <div className="space-y-1">
                     <p className="text-xs font-bold text-slate-800">{statusMessage}</p>
                     <p className="text-[9px] text-[#2563eb] uppercase tracking-widest leading-none mt-1">
-                      Powered by Gemini 3.5
+                      Powered by Gemini 2.0 Flash
                     </p>
                   </div>
                 </div>

@@ -64,10 +64,10 @@ async function startServer() {
 
 नोट: प्रतिक्रिया सीधे कार्ययोजना शीर्षक से शुरू करें। कोई अनाधिकृत बातचीत या अतिरिक्त ग्रीटिंग्स न लिखें। केवल शुद्ध, प्रशासनिक, और व्यावहारिक रूप से मान्य सरकारी ड्राफ्ट होनी चाहिए।`;
 
-      console.log(`[POLICE_AID] Querying Gemini model gemini-3.5-flash for Sector ${sectorId}...`);
+      console.log(`[POLICE_AID] Querying Gemini model gemini-2.0-flash for Sector ${sectorId}...`);
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.0-flash",
         contents: prompt,
       });
 
