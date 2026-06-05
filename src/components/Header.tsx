@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { ShieldAlert, Scale, Landmark, Printer, BarChart3, RotateCcw, Database } from "lucide-react";
-import { getSupabaseConfig } from "../lib/supabase";
+import React from "react";
+import { ShieldAlert, Landmark, Printer, BarChart3, RotateCcw, Database } from "lucide-react";
 
 interface HeaderProps {
   overallProgress: number;
@@ -9,7 +8,6 @@ interface HeaderProps {
   onPrint: () => void;
   onReset: () => void;
   isSupabaseConnected: boolean;
-  onSupabaseConfigChange: (url: string, key: string) => void;
 }
 
 export function Header({ 
@@ -18,28 +16,8 @@ export function Header({
   setViewMode, 
   onPrint, 
   onReset,
-  isSupabaseConnected,
-  onSupabaseConfigChange
+  isSupabaseConnected
 }: HeaderProps) {
-  const [showDbModal, setShowDbModal] = useState(false);
-  const [dbUrl, setDbUrl] = useState("");
-  const [dbKey, setDbKey] = useState("");
-
-  // Load existing credentials when modal opens
-  useEffect(() => {
-    const config = getSupabaseConfig();
-    if (config) {
-      setDbUrl(config.url);
-      setDbKey(config.anonKey);
-    }
-  }, [showDbModal]);
-
-  const handleSaveConfig = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSupabaseConfigChange(dbUrl, dbKey);
-    setShowDbModal(false);
-  };
-
   return (
     <header className="relative bg-white/95 backdrop-blur-md border-b border-slate-200/80 text-slate-900 select-none shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
       {/* Tricolor Border Accent on Top */}
@@ -132,20 +110,6 @@ export function Header({
               <span className="hidden sm:inline">प्रिंट / PDF</span>
             </button>
 
-            {/* Supabase Button */}
-            <button
-              onClick={() => setShowDbModal(true)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer shadow-sm ${
-                isSupabaseConnected 
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100" 
-                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900"
-              }`}
-              title="Supabase डेटाबेस सेटअप करें"
-            >
-              <Database className="w-4 h-4" />
-              <span className="hidden sm:inline">Supabase Db</span>
-            </button>
-
             <button
               onClick={onReset}
               className="p-2 rounded-xl text-slate-400 border border-slate-200 bg-slate-50 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-all cursor-pointer shadow-sm"
@@ -156,75 +120,6 @@ export function Header({
           </div>
         </div>
       </div>
-
-      {/* Supabase Connection Setup Modal */}
-      {showDbModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full border border-slate-100 overflow-hidden animate-fadeIn">
-            <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Database className="text-amber-500 w-5 h-5" />
-                <h3 className="font-serif italic text-lg font-bold">Supabase क्लाउड डेटाबेस सेटअप</h3>
-              </div>
-              <button 
-                onClick={() => setShowDbModal(false)}
-                className="text-slate-400 hover:text-white transition-colors cursor-pointer text-xl font-bold"
-              >
-                &times;
-              </button>
-            </div>
-            
-            <form onSubmit={handleSaveConfig} className="p-6 space-y-4">
-              <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 text-xs text-amber-800 space-y-2">
-                <p className="font-bold">⚠️ महत्वपूर्ण सूचना:</p>
-                <p>डेटाबेस सिंक शुरू करने के लिए अपने Supabase प्रोजेक्ट के **Settings &gt; API** से URL और anon key यहाँ दर्ज करें।</p>
-                <p>यदि आप इसे खाली छोड़कर सहेजते हैं, तो डेटा केवल आपके कंप्यूटर (LocalStorage) में सहेजा जाएगा।</p>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Supabase URL</label>
-                <input 
-                  type="url" 
-                  value={dbUrl}
-                  onChange={(e) => setDbUrl(e.target.value)}
-                  placeholder="https://your-project.supabase.co"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-slate-800"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Supabase Anon Key</label>
-                <textarea 
-                  value={dbKey}
-                  onChange={(e) => setDbKey(e.target.value)}
-                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  rows={4}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-slate-800 font-mono resize-none"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDbUrl("");
-                    setDbKey("");
-                  }}
-                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition-colors cursor-pointer text-center"
-                >
-                  साफ़ करें
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-2.5 rounded-xl text-sm shadow-md transition-all cursor-pointer text-center"
-                >
-                  डेटाबेस कनेक्ट करें
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

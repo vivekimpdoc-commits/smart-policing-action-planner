@@ -8,7 +8,7 @@ import {
   Building2, Award, Landmark, CheckSquare, Sparkles, Scale, Info, 
   HelpCircle, ChevronRight, FileText, CheckCircle
 } from "lucide-react";
-import { getSupabaseClient, saveSupabaseConfig } from "./lib/supabase";
+import { getSupabaseClient } from "./lib/supabase";
 
 export default function App() {
   // Global Sector state (restored from localStorage if possible)
@@ -262,21 +262,6 @@ export default function App() {
     }
   };
 
-  const handleSupabaseConfigChange = (url: string, key: string) => {
-    saveSupabaseConfig(url, key);
-    const client = getSupabaseClient();
-    setIsSupabaseConnected(!!client);
-    if (client) {
-      loadDataFromSupabase();
-    } else {
-      // Reload from local storage fallback
-      const savedSectors = localStorage.getItem("police_planner_sectors");
-      const savedStrategies = localStorage.getItem("police_planner_strategies");
-      if (savedSectors) setSectors(JSON.parse(savedSectors));
-      if (savedStrategies) setGeneratedStrategies(JSON.parse(savedStrategies));
-    }
-  };
-
   // Safe printing layout trigger
   const handlePrintTrigger = () => {
     window.print();
@@ -311,7 +296,6 @@ export default function App() {
         onPrint={handlePrintTrigger}
         onReset={handleResetAll}
         isSupabaseConnected={isSupabaseConnected}
-        onSupabaseConfigChange={handleSupabaseConfigChange}
       />
 
 

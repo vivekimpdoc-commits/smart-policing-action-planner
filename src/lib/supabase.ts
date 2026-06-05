@@ -7,16 +7,8 @@ export interface SupabaseConfig {
   anonKey: string;
 }
 
-// Get config from localStorage or env variables
+// Get config solely from build-time environment variables (silent backend connection)
 export function getSupabaseConfig(): SupabaseConfig | null {
-  const localUrl = localStorage.getItem("supabase_url");
-  const localKey = localStorage.getItem("supabase_anon_key");
-
-  if (localUrl && localKey) {
-    return { url: localUrl, anonKey: localKey };
-  }
-
-  // Fallback to build-time environment variables
   const envUrl = import.meta.env.VITE_SUPABASE_URL;
   const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -47,19 +39,3 @@ export function getSupabaseClient(): SupabaseClient | null {
   }
 }
 
-// Reset instance when credentials change
-export function resetSupabaseClient() {
-  supabaseInstance = null;
-}
-
-// Save credentials
-export function saveSupabaseConfig(url: string, anonKey: string) {
-  if (url.trim() && anonKey.trim()) {
-    localStorage.setItem("supabase_url", url.trim());
-    localStorage.setItem("supabase_anon_key", anonKey.trim());
-  } else {
-    localStorage.removeItem("supabase_url");
-    localStorage.removeItem("supabase_anon_key");
-  }
-  resetSupabaseClient();
-}
