@@ -286,7 +286,7 @@ export function ActiveSectorView({
   const progressPercent = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl select-none text-slate-800 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col h-full min-h-[600px] relative animate-fadeIn">
+    <div className="glass-panel rounded-2xl select-none text-slate-100 overflow-hidden shadow-[0_4px_30px_rgba(0,0,0,0.2)] flex flex-col h-full min-h-[600px] relative border border-slate-800/80 animate-fadeIn">
       
       {/* Decorative Blue/Golden Corner lines */}
       <div className="absolute top-0 right-0 p-4 pointer-events-none select-none z-10">
@@ -294,34 +294,34 @@ export function ActiveSectorView({
       </div>
 
       {/* Active Sector Banner Section */}
-      <div className="bg-slate-50/50 p-5 sm:p-6 border-b border-slate-200/60">
+      <div className="bg-slate-900/30 p-5 sm:p-6 border-b border-slate-850/60">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="space-y-1">
-            <span className="text-[9px] text-blue-700 font-extrabold uppercase tracking-widest bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-md">
+            <span className="text-[9px] text-blue-400 font-extrabold uppercase tracking-widest bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md">
               कार्ययोजना सेक्टर #{sector.id}
             </span>
-            <h2 className="text-xl sm:text-2xl font-serif italic text-slate-900 mt-1.5 tracking-tight flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-serif italic text-white mt-1.5 tracking-tight flex items-center gap-2">
               {sector.title}
             </h2>
-            <p className="text-[10px] text-slate-400 font-mono tracking-wider mt-0.5 uppercase">
+            <p className="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5 uppercase">
               {sector.englishTitle}
             </p>
           </div>
 
-          <div className="bg-white border border-slate-150 p-3 rounded-xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-sm">
+          <div className="bg-slate-900/50 border border-slate-800 p-3 rounded-xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-sm">
             <div className="text-right">
               <span className="text-[9px] text-slate-450 uppercase font-bold block tracking-wider">
                 लक्ष्य पूरा इंडेक्स
               </span>
-              <span className={`text-sm font-mono font-black ${progressPercent === 100 ? "text-emerald-600" : "text-blue-600"}`}>
+              <span className={`text-sm font-mono font-black ${progressPercent === 100 ? "text-emerald-500" : "text-blue-450"}`}>
                 {progressPercent}%
               </span>
             </div>
             <div className="w-10 h-10 relative flex items-center justify-center">
               <svg className="w-10 h-10 transform -rotate-90">
-                <circle cx="20" cy="20" r="16" className="text-slate-100" strokeWidth="2.5" fill="transparent" stroke="currentColor"/>
+                <circle cx="20" cy="20" r="16" className="text-slate-800" strokeWidth="2.5" fill="transparent" stroke="currentColor"/>
                 <circle cx="20" cy="20" r="16" 
-                  className={progressPercent === 100 ? "text-emerald-550" : "text-blue-500"} 
+                  className={progressPercent === 100 ? "text-emerald-500" : "text-blue-500"} 
                   strokeWidth="2.5" 
                   fill="transparent" 
                   strokeDasharray={100}
@@ -334,22 +334,22 @@ export function ActiveSectorView({
           </div>
         </div>
 
-        <p className="text-slate-600 text-sm leading-relaxed mt-4 bg-white p-3.5 rounded-xl border border-slate-200/60 shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+        <p className="text-slate-350 text-sm leading-relaxed mt-4 bg-slate-950/20 p-3.5 rounded-xl border border-slate-800 shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]">
           {sector.description}
         </p>
       </div>
 
       {/* Switch Workspace Tabs */}
-      <div className="flex bg-slate-50 border-b border-slate-200/80 px-2 gap-1.5 flex-shrink-0">
+      <div className="flex bg-slate-950/20 border-b border-slate-850 px-2 gap-1.5 flex-shrink-0">
         <button
           onClick={() => setActiveTab("actions")}
           className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === "actions"
-              ? "border-blue-600 text-blue-700 bg-white"
-              : "border-transparent text-slate-400 hover:text-slate-700"
+              ? "border-amber-500 text-amber-500 bg-slate-900/40"
+              : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <CheckSquare className="w-4 h-4 text-blue-600" />
+          <CheckSquare className="w-4 h-4 text-amber-500" />
           <span>राजकीय क्रियान्वयन चेकलिस्ट</span>
         </button>
 
@@ -357,11 +357,11 @@ export function ActiveSectorView({
           onClick={() => setActiveTab("ai-advisor")}
           className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === "ai-advisor"
-              ? "border-blue-600 text-blue-700 bg-white"
-              : "border-transparent text-slate-400 hover:text-slate-700"
+              ? "border-amber-500 text-amber-500 bg-slate-900/40"
+              : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <Sparkles className="w-4 h-4 text-blue-600" />
+          <Sparkles className="w-4 h-4 text-amber-500" />
           <span>AI प्रशासनिक रणनीति सहायक</span>
         </button>
 
@@ -369,11 +369,11 @@ export function ActiveSectorView({
           onClick={() => setActiveTab("pillars")}
           className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === "pillars"
-              ? "border-blue-600 text-blue-700 bg-white"
-              : "border-transparent text-slate-400 hover:text-slate-700"
+              ? "border-amber-500 text-amber-500 bg-slate-900/40"
+              : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
-          <BookOpen className="w-4 h-4 text-blue-600" />
+          <BookOpen className="w-4 h-4 text-amber-500" />
           <span>मुख्य प्रशासनिक स्तंभ ({sector.pillars.length})</span>
         </button>
       </div>
