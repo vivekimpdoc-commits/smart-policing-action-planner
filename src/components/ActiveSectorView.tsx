@@ -425,13 +425,29 @@ export function ActiveSectorView({
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">जिम्मेदार इकाई *</label>
-                    <input 
-                      type="text" 
+                    <select 
                       required
                       value={newOwner}
                       onChange={(e) => setNewOwner(e.target.value)}
                       className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-amber-500/50"
-                    />
+                    >
+                      <option value="एसएचओ / थानाध्यक्ष">एसएचओ / थानाध्यक्ष (SHO)</option>
+                      <option value="एसपी क्राइम">एसपी क्राइम (SP Crime)</option>
+                      <option value="एसपी सिटी">एसपी सिटी (SP City)</option>
+                      <option value="एसपी प्रशासन">एसपी प्रशासन (SP Admin)</option>
+                      <option value="अपर पुलिस अधीक्षक (ASP)">अपर पुलिस अधीक्षक (ASP)</option>
+                      <option value="बीट अधिकारी / चौकी प्रभारी">बीट अधिकारी / चौकी प्रभारी</option>
+                      <option value="महिला हेल्प डेस्क / महिला सुरक्षा सेल">महिला हेल्प डेस्क</option>
+                      <option value="साइबर सेल प्रभारी">साइबर सेल प्रभारी</option>
+                      <option value="यातायात पुलिस प्रमुख (Traffic SP)">यातायात पुलिस (Traffic)</option>
+                      <option value="फोरेंसिक लैब (FSL)">फोरेंसिक लैब (FSL)</option>
+                      <option value="खुफिया इकाई (LIU)">खुफिया इकाई (LIU)</option>
+                      <option value="सीसीटीएनएस (CCTNS) नोडल">सीसीटीएनएस (CCTNS) नोडल</option>
+                      <option value="कंट्रोल रूम प्रभारी">कंट्रोल रूम प्रभारी</option>
+                      <option value="अभियोजन अधिकारी">अभियोजन अधिकारी</option>
+                      <option value="पासपोर्ट सत्यापन अधिकारी">पासपोर्ट सत्यापन अधिकारी</option>
+                      <option value="आईजीआरएस / जन शिकायत प्रकोष्ठ">आईजीआरएस प्रकोष्ठ</option>
+                    </select>
                   </div>
                 </div>
 
@@ -573,13 +589,28 @@ export function ActiveSectorView({
                               className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-28"
                               placeholder="समय सीमा"
                             />
-                            <input 
-                              type="text"
+                            <select 
                               value={editOwner}
                               onChange={(e) => setEditOwner(e.target.value)}
-                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-44"
-                              placeholder="स्वामित्व विभाग"
-                            />
+                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-44 focus:outline-none"
+                            >
+                              <option value="एसएचओ / थानाध्यक्ष">एसएचओ / थानाध्यक्ष (SHO)</option>
+                              <option value="एसपी क्राइम">एसपी क्राइम (SP Crime)</option>
+                              <option value="एसपी सिटी">एसपी सिटी (SP City)</option>
+                              <option value="एसपी प्रशासन">एसपी प्रशासन (SP Admin)</option>
+                              <option value="अपर पुलिस अधीक्षक (ASP)">अपर पुलिस अधीक्षक (ASP)</option>
+                              <option value="बीट अधिकारी / चौकी प्रभारी">बीट अधिकारी / चौकी प्रभारी</option>
+                              <option value="महिला हेल्प डेस्क / महिला सुरक्षा सेल">महिला हेल्प डेस्क</option>
+                              <option value="साइबर सेल प्रभारी">साइबर सेल प्रभारी</option>
+                              <option value="यातायात पुलिस प्रमुख (Traffic SP)">यातायात पुलिस (Traffic)</option>
+                              <option value="फोरेंसिक लैब (FSL)">फोरेंसिक लैब (FSL)</option>
+                              <option value="खुफिया इकाई (LIU)">खुफिया इकाई (LIU)</option>
+                              <option value="सीसीटीएनएस (CCTNS) नोडल">सीसीटीएनएस (CCTNS) नोडल</option>
+                              <option value="कंट्रोल रूम प्रभारी">कंट्रोल रूम प्रभारी</option>
+                              <option value="अभियोजन अधिकारी">अभियोजन अधिकारी</option>
+                              <option value="पासपोर्ट सत्यापन अधिकारी">पासपोर्ट सत्यापन अधिकारी</option>
+                              <option value="आईजीआरएस / जन शिकायत प्रकोष्ठ">आईजीआरएस प्रकोष्ठ</option>
+                            </select>
                           </div>
 
                           <button 
