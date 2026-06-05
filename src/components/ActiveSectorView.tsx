@@ -437,20 +437,20 @@ export function ActiveSectorView({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर (SMS हेतु)</label>
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर (SMS हेतु, ',' से अलग करें, अधिकतम 100)</label>
                     <input 
-                      type="tel"
-                      placeholder="जैसे: +91 94544 02099 (छोड़ने पर स्वतः डिफ़ॉल्ट)"
+                      type="text"
+                      placeholder="जैसे: +91 94544 02099, +91 94544 02088"
                       value={newPhone}
                       onChange={(e) => setNewPhone(e.target.value)}
                       className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी ईमेल आईडी (Email हेतु)</label>
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी ईमेल आईडी (Email हेतु, ',' से अलग करें, अधिकतम 100)</label>
                     <input 
-                      type="email"
-                      placeholder="जैसे: sho@police.gov.in (छोड़ने पर स्वतः डिफ़ॉल्ट)"
+                      type="text"
+                      placeholder="जैसे: sho@gov.in, sp-crime@gov.in"
                       value={newEmail}
                       onChange={(e) => setNewEmail(e.target.value)}
                       className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50"
@@ -542,23 +542,23 @@ export function ActiveSectorView({
                           {/* Contact edit fields inside card */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div className="space-y-0.5">
-                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर</span>
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर (',' से अलग करें, अधिकतम 100)</span>
                               <input 
-                                type="tel"
+                                type="text"
                                 value={editPhone}
                                 onChange={(e) => setEditPhone(e.target.value)}
                                 className="w-full bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-lg text-xs text-slate-700 font-mono"
-                                placeholder="फ़ोन नम्बर"
+                                placeholder="जैसे: 9454402099, 9454402088"
                               />
                             </div>
                             <div className="space-y-0.5">
-                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी ईमेल</span>
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">प्रभारी ईमेल (',' से अलग करें, अधिकतम 100)</span>
                               <input 
-                                type="email"
+                                type="text"
                                 value={editEmail}
                                 onChange={(e) => setEditEmail(e.target.value)}
                                 className="w-full bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-lg text-xs text-slate-700 font-mono"
-                                placeholder="ईमेल आईडी"
+                                placeholder="जैसे: sho@gov.in, sp@gov.in"
                               />
                             </div>
                           </div>
@@ -687,16 +687,37 @@ export function ActiveSectorView({
                           </div>
 
                           {/* Contact Info Details row */}
-                          <div className="text-[10px] font-mono text-slate-500 bg-[#fafafa] hover:bg-slate-100 border border-slate-200/50 p-2 rounded-lg flex flex-wrap items-center gap-x-4 gap-y-1 w-fit transition-colors">
-                            <span className="flex items-center gap-1 font-semibold text-blue-700">
-                              <Phone className="w-3 h-3 text-blue-600" /> 
-                              <span>{action.ownerPhone || getFallbackContact(action.owner).phone}</span>
-                            </span>
-                            <span className="text-slate-300 hidden sm:inline">|</span>
-                            <span className="flex items-center gap-1 font-semibold text-blue-700">
-                              <Mail className="w-3 h-3 text-blue-600" /> 
-                              <span>{action.ownerEmail || getFallbackContact(action.owner).email}</span>
-                            </span>
+                          <div className="text-[10px] font-mono text-slate-500 bg-[#fafafa] hover:bg-slate-100 border border-slate-200/50 p-2 rounded-lg flex flex-col gap-1.5 w-fit transition-colors">
+                            {/* Phones list */}
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                              <span className="text-[9px] font-bold text-slate-450 uppercase tracking-wider mr-1">फोन:</span>
+                              {(action.ownerPhone || getFallbackContact(action.owner).phone)
+                                .split(",")
+                                .map(p => p.trim())
+                                .filter(Boolean)
+                                .slice(0, 100)
+                                .map((phone, idx) => (
+                                  <span key={idx} className="flex items-center gap-1 font-semibold text-blue-750 bg-blue-50/50 px-1.5 py-0.5 rounded border border-blue-200/30">
+                                    <Phone className="w-2.5 h-2.5 text-blue-600" /> 
+                                    <span>{phone}</span>
+                                  </span>
+                                ))}
+                            </div>
+                            {/* Emails list */}
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-0.5 border-t border-slate-200/40 pt-1">
+                              <span className="text-[9px] font-bold text-slate-450 uppercase tracking-wider mr-1">ईमेल:</span>
+                              {(action.ownerEmail || getFallbackContact(action.owner).email)
+                                .split(",")
+                                .map(e => e.trim())
+                                .filter(Boolean)
+                                .slice(0, 100)
+                                .map((email, idx) => (
+                                  <span key={idx} className="flex items-center gap-1 font-semibold text-blue-755 bg-blue-50/50 px-1.5 py-0.5 rounded border border-blue-200/30">
+                                    <Mail className="w-2.5 h-2.5 text-blue-600" /> 
+                                    <span>{email}</span>
+                                  </span>
+                                ))}
+                            </div>
                           </div>
                         </div>
                       </div>
