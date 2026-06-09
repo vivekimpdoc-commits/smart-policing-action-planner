@@ -308,9 +308,9 @@ export function ActiveSectorView({
             </p>
           </div>
 
-          <div className="bg-white border border-slate-150 p-3 rounded-xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-sm">
+          <div className="bg-white border border-slate-200 p-3 rounded-xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-sm">
             <div className="text-right">
-              <span className="text-[9px] text-slate-450 uppercase font-bold block tracking-wider">
+              <span className="text-[9px] text-slate-500 uppercase font-bold block tracking-wider">
                 लक्ष्य पूरा इंडेक्स
               </span>
               <span className={`text-sm font-mono font-black ${progressPercent === 100 ? "text-emerald-600" : "text-blue-600"}`}>
@@ -321,7 +321,7 @@ export function ActiveSectorView({
               <svg className="w-10 h-10 transform -rotate-90">
                 <circle cx="20" cy="20" r="16" className="text-slate-100" strokeWidth="2.5" fill="transparent" stroke="currentColor"/>
                 <circle cx="20" cy="20" r="16" 
-                  className={progressPercent === 100 ? "text-emerald-550" : "text-blue-500"} 
+                  className={progressPercent === 100 ? "text-emerald-600" : "text-blue-500"} 
                   strokeWidth="2.5" 
                   fill="transparent" 
                   strokeDasharray={100}
@@ -420,7 +420,7 @@ export function ActiveSectorView({
                       placeholder="जैसे: संवेदनशील बूथों का पुलिस बल द्वारा पैदल मार्च..."
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
-                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-amber-500/50"
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-amber-500/50"
                     />
                   </div>
                   <div className="space-y-1">
@@ -429,7 +429,7 @@ export function ActiveSectorView({
                       required
                       value={newOwner}
                       onChange={(e) => setNewOwner(e.target.value)}
-                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-amber-500/50"
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-amber-500/50"
                     >
                       <option value="एसएचओ / थानाध्यक्ष">एसएचओ / थानाध्यक्ष (SHO)</option>
                       <option value="एसपी क्राइम">एसपी क्राइम (SP Crime)</option>
@@ -459,7 +459,7 @@ export function ActiveSectorView({
                       placeholder="जैसे: +91 94544 02099, +91 94544 02088"
                       value={newPhone}
                       onChange={(e) => setNewPhone(e.target.value)}
-                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50"
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500/50"
                     />
                   </div>
                   <div className="space-y-1">
@@ -469,7 +469,7 @@ export function ActiveSectorView({
                       placeholder="जैसे: sho@gov.in, sp-crime@gov.in"
                       value={newEmail}
                       onChange={(e) => setNewEmail(e.target.value)}
-                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50"
+                      className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500/50"
                     />
                   </div>
                 </div>
@@ -481,7 +481,7 @@ export function ActiveSectorView({
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     rows={2}
-                    className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-blue-500/50 resize-none"
+                    className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500/50 resize-none"
                   />
                 </div>
 
@@ -492,7 +492,7 @@ export function ActiveSectorView({
                       type="text" 
                       value={newTimeline}
                       onChange={(e) => setNewTimeline(e.target.value)}
-                      className="bg-white border border-slate-200 px-2 py-1 rounded-lg text-xs text-slate-850 focus:outline-none w-28 placeholder-slate-400 focus:border-blue-500/50"
+                      className="bg-white border border-slate-200 px-2 py-1 rounded-lg text-xs text-slate-800 focus:outline-none w-28 placeholder-slate-400 focus:border-blue-500/50"
                     />
                   </div>
 
@@ -500,7 +500,7 @@ export function ActiveSectorView({
                     <button 
                       type="button" 
                       onClick={() => setShowAddForm(false)}
-                      className="px-3 py-1.5 text-xs font-semibold text-slate-450 bg-transparent hover:text-slate-800"
+                      className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-transparent hover:text-slate-800"
                     >
                       रद्द करें
                     </button>
@@ -532,9 +532,9 @@ export function ActiveSectorView({
                     {isEditing ? (
                       /* Editing form overlay within card */
                       <div className="space-y-3 animate-fadeIn">
-                        <div className="flex items-center justify-between pb-1 border-b border-slate-150">
+                        <div className="flex items-center justify-between pb-1 border-b border-slate-200">
                           <span className="text-[10px] text-blue-700 font-extrabold uppercase tracking-wider">SOP संपादित करें</span>
-                          <button onClick={() => setEditingActionId(null)} className="text-slate-450 hover:text-slate-805 p-1">
+                          <button onClick={() => setEditingActionId(null)} className="text-slate-400 hover:text-slate-800 p-1">
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -550,7 +550,7 @@ export function ActiveSectorView({
                           <textarea 
                             value={editDesc}
                             onChange={(e) => setEditDesc(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg text-xs text-slate-650"
+                            className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg text-xs text-slate-700"
                             rows={2}
                             placeholder="कार्य विवरण"
                           />
@@ -586,13 +586,13 @@ export function ActiveSectorView({
                               type="text"
                               value={editTimeline}
                               onChange={(e) => setEditTimeline(e.target.value)}
-                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-28"
+                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-700 w-28"
                               placeholder="समय सीमा"
                             />
                             <select 
                               value={editOwner}
                               onChange={(e) => setEditOwner(e.target.value)}
-                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-650 w-44 focus:outline-none"
+                              className="bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg text-[11px] text-slate-700 w-44 focus:outline-none"
                             >
                               <option value="एसएचओ / थानाध्यक्ष">एसएचओ / थानाध्यक्ष (SHO)</option>
                               <option value="एसपी क्राइम">एसपी क्राइम (SP Crime)</option>
@@ -632,7 +632,7 @@ export function ActiveSectorView({
                           className="mt-0.5 hover:scale-105 transition-transform flex-shrink-0 cursor-pointer text-slate-400 hover:text-blue-600"
                         >
                           {action.completed ? (
-                            <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg border border-emerald-250">
+                            <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg border border-emerald-200">
                               <Check className="w-4 h-4 text-emerald-600 stroke-[3]" />
                             </div>
                           ) : (
@@ -809,13 +809,13 @@ export function ActiveSectorView({
               </div>
             )}
 
-            <div className="bg-blue-50/60 border border-blue-150 p-4 rounded-xl flex items-start gap-3">
+            <div className="bg-blue-50/60 border border-blue-200 p-4 rounded-xl flex items-start gap-3">
               <Sparkles className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <h4 className="text-xs font-black text-blue-800 uppercase tracking-wider">
                   AI स्मार्ट पुलिसिंग रणनीति विकासक
                 </h4>
-                <p className="text-xs text-slate-650 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   इस प्राथमिकता विषय पर एक विस्तृत और स्थानीय विनिर्देशों के अनुरूप राजकीय SOP / नीति गाइड जारी करने के लिए संदर्भ परिदृश्य चुनें और AI कमांड सक्रिय करें।
                 </p>
               </div>
@@ -841,7 +841,7 @@ export function ActiveSectorView({
                     <span className={`font-bold ${selectedScenarioIndex === scIdx ? "text-white" : "text-blue-900"}`}>
                       {sc.label}
                     </span>
-                    <span className={`text-[10px] line-clamp-2 leading-snug mt-1 ${selectedScenarioIndex === scIdx ? "text-blue-100" : "text-slate-450"}`}>
+                    <span className={`text-[10px] line-clamp-2 leading-snug mt-1 ${selectedScenarioIndex === scIdx ? "text-blue-100" : "text-slate-500"}`}>
                       {sc.context}
                     </span>
                   </button>
@@ -859,7 +859,7 @@ export function ActiveSectorView({
                 onChange={(e) => setLocalDetails(e.target.value)}
                 rows={3}
                 placeholder={activeScenario.placeholder || "जैसे: थाना क्षेत्र में 10 संवेदनशील स्थान हैं, हमारे पास गश्ती हेतु केवल 2 गाड़ियां व 15 कांस्टेबल हैं। बजटीय सहायता मध्यम है।"}
-                className="w-full bg-white border border-slate-200 p-3 rounded-xl text-xs text-slate-850 placeholder-slate-400 focus:outline-none focus:border-blue-500/50 resize-none hover:border-slate-300 transition-all shadow-sm"
+                className="w-full bg-white border border-slate-200 p-3 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500/50 resize-none hover:border-slate-300 transition-all shadow-sm"
               />
             </div>
 
@@ -867,7 +867,7 @@ export function ActiveSectorView({
             <button
               onClick={handleGenerateAIStrategy}
               disabled={loadingAI}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 border border-blue-700 p-3.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-blue-650/15"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 border border-blue-700 p-3.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-blue-600/15"
             >
               {loadingAI ? (
                 <>
@@ -883,7 +883,7 @@ export function ActiveSectorView({
             </button>
 
             {/* AI Generation response board */}
-            <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-55/40 min-h-[150px] relative shadow-sm">
+            <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 min-h-[150px] relative shadow-sm">
               {loadingAI ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center space-y-3 bg-white/95 px-4 text-center">
                   <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
@@ -897,7 +897,7 @@ export function ActiveSectorView({
               ) : null}
 
               {aiError && (
-                <div className="p-4 bg-red-50 border-b border-red-150 text-red-600 flex items-start gap-2 text-xs">
+                <div className="p-4 bg-red-50 border-b border-red-200 text-red-600 flex items-start gap-2 text-xs">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-extrabold uppercase block tracking-wider mb-0.5">तकनीकी त्रुटि</span>
@@ -926,7 +926,7 @@ export function ActiveSectorView({
                     </button>
                   </div>
 
-                  <div className="prose max-w-none text-slate-850 markdown-body">
+                  <div className="prose max-w-none text-slate-800 markdown-body">
                     <MarkdownRenderer content={savedStrategyHTML} />
                   </div>
                 </div>
@@ -954,13 +954,13 @@ export function ActiveSectorView({
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {sector.pillars.map((pillar, idx) => (
-                <div key={idx} className="bg-slate-50/50 border border-slate-200/60 p-5 rounded-2xl space-y-3 flex flex-col justify-between shadow-sm hover:border-blue-200 transition-all duration-300">
+                <div key={idx} className="bg-slate-50/50 border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between shadow-sm hover:border-blue-200 transition-all duration-300">
                   <div className="space-y-2">
-                    <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-250/60 flex items-center justify-center text-blue-700 text-sm font-black">
+                    <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-blue-700 text-sm font-black">
                       0{idx + 1}
                     </div>
                     <h4 className="font-bold text-sm text-slate-900">{pillar.title}</h4>
-                    <p className="text-xs text-slate-650 leading-relaxed">{pillar.description}</p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{pillar.description}</p>
                   </div>
                   <div className="pt-2">
                     <div className="w-full bg-slate-200/60 h-1 rounded-full overflow-hidden">
@@ -1008,7 +1008,7 @@ export function ActiveSectorView({
                     <p className="text-[10px] text-slate-400 font-mono">Connecting MHA Telecom & NIC SMTP Gateway...</p>
                   </div>
                   {/* Simulated progress checklist */}
-                  <div className="bg-slate-50 rounded-xl p-3 text-left space-y-1.5 font-mono text-[9px] text-slate-550 border border-slate-200/50 max-w-xs mx-auto">
+                  <div className="bg-slate-50 rounded-xl p-3 text-left space-y-1.5 font-mono text-[9px] text-slate-500 border border-slate-200/50 max-w-xs mx-auto">
                     <div className="flex items-center gap-2 text-emerald-600">
                       <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600 flex-shrink-0" />
                       <span>नोडल नेटवर्क कनेक्शन सुरक्षित...</span>
@@ -1031,7 +1031,7 @@ export function ActiveSectorView({
                   </div>
                   <div className="text-center space-y-1">
                     <p className="text-sm font-black text-emerald-700">संसूचना सफलतापूर्वक प्रेषित!</p>
-                    <p className="text-xs text-slate-550 leading-normal">
+                    <p className="text-xs text-slate-500 leading-normal">
                       नियुक्त नोडल प्रभारी <span className="font-extrabold text-blue-700">{activeNotification.owner}</span> को कार्यभार सौंपने सम्बन्धी संदेश भेज दिया गया है।
                     </p>
                   </div>
@@ -1042,9 +1042,9 @@ export function ActiveSectorView({
                     <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl space-y-2">
                       <div className="flex flex-wrap items-center justify-between gap-1 text-[9.5px] font-black text-blue-700 uppercase tracking-wider pb-1 border-b border-slate-200">
                         <span>📱 मोबाइल एसएमएस (SMS DELIVERED)</span>
-                        <span className="font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-150">{activeNotification.phone}</span>
+                        <span className="font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-200">{activeNotification.phone}</span>
                       </div>
-                      <p className="text-xs text-slate-650 leading-relaxed font-sans italic bg-white p-2 rounded border border-slate-100">
+                      <p className="text-xs text-slate-600 leading-relaxed font-sans italic bg-white p-2 rounded border border-slate-100">
                         "प्रिय {activeNotification.owner}, आपको नवीन विधिक कार्यभार दिया गया है: <strong className="text-slate-800 font-extrabold">{activeNotification.taskTitle}</strong>। समय सीमा: <strong>{activeNotification.timeline}</strong>। तत्काल संज्ञान लें। - जिला पुलिस कप्तान कार्यालय।"
                       </p>
                     </div>
@@ -1053,11 +1053,11 @@ export function ActiveSectorView({
                     <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl space-y-2">
                       <div className="flex flex-wrap items-center justify-between gap-1 text-[9.5px] font-black text-blue-700 uppercase tracking-wider pb-1 border-b border-slate-200">
                         <span>✉️ राजकीय ईमेल (EMAIL DISPATCHED)</span>
-                        <span className="font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-150">{activeNotification.email}</span>
+                        <span className="font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-200">{activeNotification.email}</span>
                       </div>
-                      <div className="text-[11px] text-slate-650 leading-normal font-sans bg-white p-2.5 rounded border border-slate-100 space-y-1">
-                        <p className="font-black text-slate-800 border-b border-dashed border-slate-150 pb-0.5">विषय: नवीन राजकीय कार्यभार आवंटन</p>
-                        <p className="pt-0.5 text-slate-550 italic leading-snug">
+                      <div className="text-[11px] text-slate-600 leading-normal font-sans bg-white p-2.5 rounded border border-slate-200 space-y-1">
+                        <p className="font-black text-slate-800 border-b border-dashed border-slate-200 pb-0.5">विषय: नवीन राजकीय कार्यभार आवंटन</p>
+                        <p className="pt-0.5 text-slate-500 italic leading-snug">
                           महोदय,<br />
                           आपको पुलिस विभाग योजना के तहत निम्नलिखित प्रशासनिक जिम्मेदारी का प्रभार सौंपा गया है:<br />
                           📌 <strong>{activeNotification.taskTitle}</strong><br />

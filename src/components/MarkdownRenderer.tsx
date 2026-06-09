@@ -37,7 +37,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h3 
           key={index} 
-          className="text-xl font-bold text-amber-500 mt-8 mb-4 border-b-2 border-slate-750 pb-2 flex items-center gap-2"
+          className="text-xl font-bold text-amber-500 mt-8 mb-4 border-b-2 border-slate-700 pb-2 flex items-center gap-2"
         >
           <span className="w-2 h-5 bg-amber-500 rounded-sm"></span>
           {parseBoldText(headerText)}

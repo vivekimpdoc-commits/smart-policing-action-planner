@@ -17,13 +17,13 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
       </div>
 
       {/* Grand Title Info */}
-      <div className="bg-[#09090b]/80 border border-slate-850/80 p-5 sm:p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 relative z-20">
+      <div className="bg-[#09090b]/80 border border-slate-800/80 p-5 sm:p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 relative z-20">
         <div className="space-y-2 max-w-2xl">
           <h2 className="text-xl sm:text-2xl font-serif italic text-white tracking-tight flex items-center gap-2">
-            <LucideIcons.FileSpreadsheet className="w-5.5 h-5.5 text-amber-500 animate-pulse" />
+            <LucideIcons.FileSpreadsheet className="w-6 h-6 text-amber-500 animate-pulse" />
             समग्र पुलिस प्रशासनिक रिपोर्ट कार्ड <span className="text-amber-500 font-sans not-italic font-light text-sm sm:text-base ml-1 select-text">(Status Executive Summary)</span>
           </h2>
-          <p className="text-slate-450 text-xs sm:text-sm leading-relaxed">
+          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
             यह डै‍शबोर्ड राज्य पुलिस की 10 महत्वपूर्ण प्राथमिकताओं के विरुद्ध जारी क्रियान्वयन प्रगति का एक संकलित प्रिफेक्टर प्रस्तुत करता है। नीचे प्रत्येक विषय के अंतर्गत निहित 5 बुनियादी सरकारी दिशानिर्देशों (कुल 50 योजनाएं) की वर्तमान स्थिति और किए गए कार्यों की प्रतिशत ऑडिट दर्ज है।
           </p>
         </div>
@@ -68,13 +68,13 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/15 flex items-center justify-center text-amber-500 group-hover:bg-amber-500/20 transition-all">
-                      <IconComponent className="w-4.5 h-4.5" />
+                      <IconComponent className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="text-[9px] uppercase font-bold text-slate-500 tracking-wider font-mono">
                         प्राथमिकता क्षेत्र #{sector.id}
                       </div>
-                      <h3 className="text-sm sm:text-base font-serif italic text-slate-150 group-hover:text-amber-400 transition-colors mt-0.5">
+                      <h3 className="text-sm sm:text-base font-serif italic text-slate-200 group-hover:text-amber-400 transition-colors mt-0.5">
                         {sector.title}
                       </h3>
                     </div>
@@ -84,7 +84,7 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
                       ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
                       : completedActions > 0 
                       ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" 
-                      : "bg-slate-900 text-slate-500 border border-slate-850"
+                      : "bg-slate-900 text-slate-500 border border-slate-800"
                   }`}>
                     {progressPercent}% पूर्ण
                   </span>
@@ -105,7 +105,7 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
                     <div 
                       className={`h-full rounded-full transition-all duration-505 ${
                         progressPercent === 100 
-                          ? "bg-gradient-to-r from-emerald-600 to-emerald-450" 
+                          ? "bg-gradient-to-r from-emerald-600 to-emerald-500" 
                           : "bg-gradient-to-r from-amber-600 to-amber-500"
                       }`}
                       style={{ width: `${progressPercent}%` }}
