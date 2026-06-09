@@ -45,7 +45,7 @@ export function Header({
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-serif italic text-slate-900 mt-1.5 leading-tight tracking-tight drop-shadow-sm">
-              स्मार्ट पुलिसिंग कार्ययोजना <span className="bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent font-sans not-italic font-extrabold ml-1 text-base sm:text-lg select-text">व नीति योजनाकार</span>
+              स्मार्ट पुलिसिंग कार्ययोजना <span className="bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent font-sans not-italic font-extrabold ml-1 pr-1 py-1 text-base sm:text-lg select-text">व नीति योजनाकार</span>
             </h1>
             <p className="text-slate-500 text-[10px] uppercase tracking-widest mt-1 font-bold">
               10 मुख्य प्रशासनिक प्राथमिकता क्षेत्रों की विस्तृत राजकीय रणनीति एवं क्रियान्वयन प्रणाली

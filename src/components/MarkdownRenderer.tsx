@@ -50,7 +50,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h2 
           key={index} 
-          className="text-2xl font-black bg-gradient-to-r from-indigo-700 to-blue-600 bg-clip-text text-transparent mt-8 mb-4 tracking-tight drop-shadow-sm"
+          className="text-2xl font-black bg-gradient-to-r from-indigo-700 to-blue-600 bg-clip-text text-transparent mt-8 mb-4 tracking-tight drop-shadow-sm pr-2 py-1"
         >
           {parseBoldText(headerText)}
         </h2>
