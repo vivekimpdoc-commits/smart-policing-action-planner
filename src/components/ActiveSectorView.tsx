@@ -7,6 +7,7 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import { PrioritySector, ActionStep } from "../data";
 import { MarkdownRenderer } from "./MarkdownRenderer";
+import { UserCredentials } from "./Login";
 
 // Helper to provide realistic default contact details for governmental departments
 export const getFallbackContact = (owner: string) => {
@@ -26,7 +27,7 @@ export const getFallbackContact = (owner: string) => {
   if (clean.includes("महिला सुरक्षा") || clean.includes("महिला हेल्प डेस्क") || clean.includes("महिला कल्याण")) {
     return { phone: "+91 94544 03022", email: "nodal-womenwelfare@police.gov.in" };
   }
-  if (clean.includes("यातायात") || clean.includes("ट्रैफिक")) {
+  if (clean.includes("एसपी ट्रैफिक") || clean.includes("यातायात") || clean.includes("ट्रैफिक")) {
     return { phone: "+91 94544 01811", email: "sp-traffic@police.gov.in" };
   }
   if (clean.includes("किशोर पुलिस इकाई") || clean.includes("SJPU")) {
@@ -76,6 +77,7 @@ interface ActiveSectorViewProps {
   onEditAction: (sectorId: number, actionId: string, updated: Partial<ActionStep>) => void;
   generatedStrategies: { [key: string]: string };
   onSaveStrategy: (sectorId: number, scenarioKey: string, text: string) => void;
+  loggedInUser?: UserCredentials | null;
 }
 
 export function ActiveSectorView({
@@ -85,7 +87,8 @@ export function ActiveSectorView({
   onDeleteAction,
   onEditAction,
   generatedStrategies,
-  onSaveStrategy
+  onSaveStrategy,
+  loggedInUser
 }: ActiveSectorViewProps) {
   // Tabs: "actions" (SOP Checklist) | "ai-advisor" (AI Advisor) | "pillars" (Pillars)
   const [activeTab, setActiveTab] = useState<"actions" | "ai-advisor" | "pillars">("actions");
@@ -133,13 +136,16 @@ export function ActiveSectorView({
     });
 
     try {
+      const targetPhone = loggedInUser?.phone || phone;
+      const targetEmail = loggedInUser?.email || email;
+
       const response = await fetch('http://localhost:3001/api/send-notification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          owner,
-          phones: phone ? phone.split(',').map(p => p.trim()) : [],
-          emails: email ? email.split(',').map(e => e.trim()) : [],
+          owner, // Send original owner name to display in the email body
+          phones: targetPhone ? targetPhone.split(',').map(p => p.trim()) : [],
+          emails: targetEmail ? targetEmail.split(',').map(e => e.trim()) : [],
           taskTitle,
           timeline
         })

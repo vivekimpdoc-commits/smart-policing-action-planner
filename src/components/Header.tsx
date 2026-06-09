@@ -1,6 +1,8 @@
 import React from "react";
 import { ShieldAlert, Landmark, Printer, BarChart3, RotateCcw, Database } from "lucide-react";
 
+import { UserCredentials } from "./Login";
+
 interface HeaderProps {
   overallProgress: number;
   viewMode: "dashboard" | "report";
@@ -8,6 +10,8 @@ interface HeaderProps {
   onPrint: () => void;
   onReset: () => void;
   isSupabaseConnected: boolean;
+  loggedInUser?: UserCredentials | null;
+  onLogout?: () => void;
 }
 
 export function Header({ 
@@ -16,7 +20,9 @@ export function Header({
   setViewMode, 
   onPrint, 
   onReset,
-  isSupabaseConnected
+  isSupabaseConnected,
+  loggedInUser,
+  onLogout
 }: HeaderProps) {
   return (
     <header className="relative bg-white/90 backdrop-blur-md border-b border-slate-200/85 text-slate-900 select-none shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
@@ -88,6 +94,13 @@ export function Header({
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
+            {loggedInUser && (
+              <div className="hidden sm:flex flex-col items-end mr-2 pr-2 border-r border-slate-300">
+                <span className="text-[10px] font-bold text-slate-500 uppercase">Logged in as</span>
+                <span className="text-xs font-black text-indigo-700">{loggedInUser.name}</span>
+              </div>
+            )}
+            
             <button
               onClick={() => setViewMode(viewMode === "dashboard" ? "report" : "dashboard")}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer ${
@@ -112,11 +125,21 @@ export function Header({
 
             <button
               onClick={onReset}
-              className="p-2 rounded-xl text-slate-600 border border-slate-300 bg-slate-100/40 hover:text-red-400 hover:bg-red-950/30 hover:border-red-900 transition-all cursor-pointer shadow-sm"
+              className="p-2 rounded-xl text-slate-600 border border-slate-300 bg-slate-100/40 hover:text-red-400 hover:bg-red-50 hover:border-red-200 transition-all cursor-pointer shadow-sm"
               title="सभी बदलाव रीसेट करें"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
+
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="ml-1 p-2 rounded-xl text-slate-500 border border-slate-300 bg-slate-100/40 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 transition-all cursor-pointer shadow-sm text-xs font-bold"
+                title="लॉगआउट करें (Logout)"
+              >
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>

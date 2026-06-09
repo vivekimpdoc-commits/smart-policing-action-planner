@@ -4,6 +4,7 @@ import { Header } from "./components/Header";
 import { PriorityList } from "./components/PriorityList";
 import { ActiveSectorView } from "./components/ActiveSectorView";
 import { OverviewReport } from "./components/OverviewReport";
+import { Login, UserCredentials } from "./components/Login";
 import { 
   Building2, Award, Landmark, CheckSquare, Sparkles, Scale, Info, 
   HelpCircle, ChevronRight, FileText, CheckCircle
@@ -11,6 +12,8 @@ import {
 import { getSupabaseClient } from "./lib/supabase";
 
 export default function App() {
+  const [loggedInUser, setLoggedInUser] = useState<UserCredentials | null>(null);
+  
   // Global Sector state (restored from localStorage if possible)
   const [sectors, setSectors] = useState<PrioritySector[]>([]);
   const [activeSectorId, setActiveSectorId] = useState<number>(1);
@@ -23,6 +26,10 @@ export default function App() {
 
   // Initialize and load state
   useEffect(() => {
+    const savedUser = localStorage.getItem("police_planner_user");
+    if (savedUser) {
+      try { setLoggedInUser(JSON.parse(savedUser)); } catch (e) {}
+    }
     const savedSectors = localStorage.getItem("police_planner_sectors");
     const savedStrategies = localStorage.getItem("police_planner_strategies");
 
@@ -285,6 +292,20 @@ export default function App() {
   const overallProgress = calculateOverallProgress();
   const activeSector = sectors.find(sec => sec.id === activeSectorId) || sectors[0];
 
+  const handleLogin = (user: UserCredentials) => {
+    setLoggedInUser(user);
+    localStorage.setItem("police_planner_user", JSON.stringify(user));
+  };
+
+  const handleLogout = () => {
+    setLoggedInUser(null);
+    localStorage.removeItem("police_planner_user");
+  };
+
+  if (!loggedInUser) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <div className="min-h-screen bg-transparent text-slate-900 flex flex-col font-sans subpixel-antialiased">
       
@@ -296,8 +317,9 @@ export default function App() {
         onPrint={handlePrintTrigger}
         onReset={handleResetAll}
         isSupabaseConnected={isSupabaseConnected}
+        loggedInUser={loggedInUser}
+        onLogout={handleLogout}
       />
-
 
       {/* WORKSPACE WRAPPER */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
@@ -325,6 +347,7 @@ export default function App() {
                 onEditAction={handleEditAction}
                 generatedStrategies={generatedStrategies}
                 onSaveStrategy={handleSaveStrategy}
+                loggedInUser={loggedInUser}
               />
             </div>
 
