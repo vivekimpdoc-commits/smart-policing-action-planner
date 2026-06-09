@@ -286,7 +286,7 @@ export default function App() {
   const activeSector = sectors.find(sec => sec.id === activeSectorId) || sectors[0];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans subpixel-antialiased selection:bg-amber-500/20 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans subpixel-antialiased selection:bg-amber-500/25 selection:text-amber-900">
       
       {/* HEADER BAR */}
       <Header 
@@ -345,16 +345,16 @@ export default function App() {
       </main>
 
       {/* FOOTER BAR */}
-      <footer className="bg-slate-900/60 border-t border-slate-850 py-6 text-center select-none text-xs text-slate-450 max-w-none w-full print:hidden backdrop-blur-md">
+      <footer className="bg-white border-t border-slate-200/80 py-6 text-center select-none text-xs text-slate-500 max-w-none w-full print:hidden">
         <div className="max-w-7xl mx-auto px-4 space-y-2.5">
-          <div className="flex items-center justify-center gap-1.5 text-amber-500 font-semibold uppercase tracking-wider">
+          <div className="flex items-center justify-center gap-1.5 text-amber-600 font-semibold uppercase tracking-wider">
             <Landmark className="w-4 h-4" />
             <span>राष्ट्रीय कानून व्यवस्था और सुरक्षा डेटाबेस प्रणाली</span>
           </div>
-          <p className="leading-relaxed text-slate-400 max-w-md mx-auto text-xs">
+          <p className="leading-relaxed text-slate-550 max-w-md mx-auto text-xs">
             यह प्रणाली सुरक्षा तंत्र के सुदृढ़ीकरण, मानवाधिकारों के संरक्षण, और निष्पक्ष कानूनी विवेचनाओं को पूर्णतः ऑनलाइन एवं पारदर्शी योजनाबद्ध प्रारूप में संरेखित करने के लिए अधिकृत है।
           </p>
-          <p className="text-[10px] text-slate-500">
+          <p className="text-[10px] text-slate-400">
             © 2026 इंटेलिजेंट पुलिस प्लानिंग कंसोल। राष्ट्रीय सुरक्षा मार्गदर्शिका संवर्धन। All Rights Reserved.
           </p>
         </div>
