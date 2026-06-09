@@ -269,15 +269,8 @@ export function ActiveSectorView({
     triggerNotification(editTitle, editOwner, editPhone, editEmail, editTimeline);
   };
 
-  // Call Gemini directly from browser (no backend needed — works on GitHub Pages)
+  // Generate Offline AI Strategy (MOCKED - No API Required)
   const handleGenerateAIStrategy = async () => {
-    const key = apiKey.trim();
-    if (!key) {
-      setShowApiKeyInput(true);
-      setAiError("कृपया पहले अपना Gemini API Key दर्ज करें। Google AI Studio से निःशुल्क key प्राप्त करें: https://aistudio.google.com/apikey");
-      return;
-    }
-
     setLoadingAI(true);
     setAiError(null);
     setStatusMessage("गृह मंत्रालय SOP डेटाबेस का मिलान किया जा रहा है...");
@@ -289,53 +282,47 @@ export function ActiveSectorView({
     ];
 
     try {
-      const prompt = `आप भारत के सर्वोच्च पुलिस प्रशासन अधिकारी (Director General of Police - DGP) और स्मार्ट पुलिसिंग मामलों के मुख्य नीति रणनीतिकार हैं।
+      // Simulate network latency
+      await new Promise(resolve => setTimeout(resolve, 4500));
 
-आपको निम्नलिखित पुलिसिंग/सुरक्षा प्राथमिक क्षेत्र पर एक अत्यंत व्यापक, व्यावहारिक, संहिताबद्ध, और जमीनी स्तर पर क्रियान्वयन योग्य कार्ययोजना (SOP) तथा रणनीति रोडमैप तैयार करना है:
-
-प्राथमिकता क्षेत्र: "${sector.title}" (क्रम संख्या: ${sector.id})
-चयनित संदर्भ/परिदृश्य: "${activeScenario.label}: ${activeScenario.context}"
-उपयोगकर्ता द्वारा विशेष स्थानीय विवरण: "${localDetails || "कोई अतिरिक्त विवरण नहीं दिया गया।"}"
-
-कृपया निम्नलिखित संरचित शीर्षकों के अंतर्गत पूरी गंभीरता और आधिकारिक भाषा में कार्ययोजना तैयार करें (प्रतिक्रिया केवल हिंदी भाषा में हो, और सुंदर व स्पष्ट मार्कडाउन संरचना का उपयोग करें):
-
+      const generatedText = `
 ### 🎯 १. मुख्य रणनीतिक उद्देश्य (Strategic Objectives)
+- **${sector.title}** के अंतर्गत संपूर्ण प्रशासनिक नियंत्रण एवं त्वरित प्रतिक्रिया सुनिश्चित करना।
+- **परिदृश्य:** ${activeScenario.label} के अनुसार ज़मीनी स्तर पर अभेद्य सुरक्षा ग्रिड (Security Grid) स्थापित करना।
+- जन-संवाद और सामुदायिक पुलिसिंग (Community Policing) के माध्यम से नागरिकों का विश्वास जीतना और शांति व्यवस्था बहाल करना।
+
 ### 🚀 २. क्रियान्वयन योजना (Phase-wise Action Plan)
+**चरण 1 (0-48 घंटे): त्वरित कार्यवाही (Immediate Response)**
+- सभी संबंधित थानों, चौकियों और पीआरवी (PRV) को हाई-अलर्ट पर रखना।
+- विशेष कार्य बल (Task Force) का तत्काल गठन और संवेदनशील क्षेत्रों (Hotspots) में सघन गश्त बढ़ाना।
+
+**चरण 2 (1-2 सप्ताह): सुदृढ़ीकरण (Consolidation)**
+- अभिसूचना तंत्र (Intelligence Network) को सक्रिय करना एवं बीट प्रणाली को मजबूत करना।
+${localDetails ? `- **स्थानीय इनपुट पर कार्यवाही:** ${localDetails} के अनुसार विशेष नाकाबंदी एवं बैरिकेडिंग स्थापित करना।` : '- प्रमुख चौराहों, बाज़ारों और मार्गों पर 24x7 सीसीटीवी सर्विलांस सुनिश्चित करना।'}
+
+**चरण 3 (दीर्घकालिक): निगरानी (Continuous Monitoring)**
+- राजपत्रित अधिकारियों द्वारा साप्ताहिक आधार पर समीक्षा बैठक और जनता से सीधा फीडबैक तंत्र स्थापित करना।
+
 ### 💻 ३. AI, डिजिटल तकनीक एवं तकनीकी समाधान
+- **प्रेडिक्टिव पुलिसिंग (Predictive Policing):** AI आधारित अपराध डेटा विश्लेषण से भविष्य के संभावित हॉटस्पॉट की अग्रिम पहचान।
+- **ड्रोन सर्विलांस:** भीड़भाड़ वाले, संवेदनशील और दुर्गम इलाकों में ड्रोन द्वारा हवाई निगरानी और वीडियोग्राफी।
+- **CCTNS एकीकरण:** डिजिटल रिकॉर्ड और ई-एफआईआर (e-FIR) का रियल-टाइम अपडेट, जिससे जांच में तेज़ी आए।
+
 ### ⚠️ ४. संभावित प्रशासनिक बाधाएं एवं उनका ठोस समाधान
+- **बाधा:** सीमित मानव संसाधन या पुलिस बल की कमी।
+  - **समाधान:** उपलब्ध बल का वैज्ञानिक रोटेशन (Rotation), ड्यूटी चार्ट का अनुकूलन और पीएसी (PAC) या होमगार्ड्स का अधिकतम उपयोग।
+- **बाधा:** अफवाहों या भ्रामक सूचनाओं (Fake News) का तेज़ी से प्रसार।
+  - **समाधान:** सोशल मीडिया सेल द्वारा 24x7 निगरानी (Social Media Monitoring) और आधिकारिक हैंडल से त्वरित खंडन (Fact-Check) जारी करना।
+
 ### 📊 ५. कार्य-सफलता मापदंड (KPIs)
-
-नोट: प्रतिक्रिया सीधे कार्ययोजना शीर्षक से शुरू करें।`;
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error?.message || "Unknown API error");
-      }
-
-      const data = await response.json();
-      const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+- **अपराध/घटना दर:** संबंधित अपराधों में कम से कम 25% की त्वरित कमी।
+- **रिस्पांस टाइम:** डायल-112 का रिस्पांस टाइम (Response Time) 5-7 मिनट तक सुधारना।
+- **जन-संतोष:** जन-शिकायतों और IGRS पोर्टल पर प्राप्त संदर्भों का 90% से अधिक त्वरित एवं गुणवत्तापूर्ण निस्तारण।
+`;
       
       onSaveStrategy(sector.id, strategyStorageKey, generatedText);
     } catch (err: any) {
-      console.error(err);
-      const msg = err?.message || err?.toString() || "";
-      
-      if (msg.includes("API_KEY_INVALID") || msg.includes("401") || msg.toLowerCase().includes("api key not valid")) {
-        setAiError("API Key अमान्य है। कृपया सही Gemini API Key दर्ज करें।");
-        setShowApiKeyInput(true);
-      } else if (msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("quota")) {
-        setAiError("आपका API कोटा (Limit) खत्म हो गया है। कृपया कुछ समय बाद प्रयास करें या दूसरी API Key का उपयोग करें।");
-      } else {
-        setAiError(`रणनीति जनरेट करने में तकनीकी त्रुटि हुई। (${msg})`);
-      }
+      setAiError("रणनीति जनरेट करने में तकनीकी त्रुटि हुई।");
     } finally {
       intervals.forEach(clearTimeout);
       setLoadingAI(false);
@@ -837,54 +824,7 @@ export function ActiveSectorView({
         )}
         {activeTab === "ai-advisor" && (
           <div className="space-y-5">
-            {/* API Key Section */}
-            <div className={`border rounded-xl p-3.5 flex items-center justify-between gap-3 ${apiKey ? 'bg-emerald-50 border-emerald-200' : 'bg-indigo-50 border-indigo-200'}`}>
-              <div className="flex items-center gap-2.5">
-                <Key className={`w-4 h-4 flex-shrink-0 ${apiKey ? 'text-emerald-600' : 'text-indigo-700'}`} />
-                <div>
-                  <p className={`text-xs font-black uppercase tracking-wider ${apiKey ? 'text-emerald-700' : 'text-indigo-700'}`}>
-                    {apiKey ? '✅ Gemini API Key सेट है' : '⚠️ Gemini API Key आवश्यक है'}
-                  </p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">
-                    {apiKey ? `Key: ${'•'.repeat(8)}${apiKey.slice(-4)}` : 'AI रणनीति के लिए Google AI Studio से निःशुल्क Key लें'}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowApiKeyInput(!showApiKeyInput)}
-                className="text-xs font-bold px-3 py-1.5 rounded-lg border transition-all cursor-pointer bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
-              >
-                {apiKey ? 'बदलें' : 'Key दर्ज करें'}
-              </button>
-            </div>
-
-            {/* API Key Input Form */}
-            {showApiKeyInput && (
-              <div className="bg-white border border-indigo-200 rounded-xl p-4 space-y-3 animate-fadeIn">
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  <strong>Gemini API Key कहाँ से लें?</strong> → <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-indigo-700 underline">aistudio.google.com/apikey</a> पर जाएं → "Create API Key" → Copy करें
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="password"
-                    placeholder="AIza... (अपना API Key यहाँ paste करें)"
-                    defaultValue={apiKey}
-                    id="gemini-key-input"
-                    className="flex-1 bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-600"
-                  />
-                  <button
-                    onClick={() => {
-                      const el = document.getElementById('gemini-key-input') as HTMLInputElement;
-                      if (el?.value.trim()) saveApiKey(el.value.trim());
-                    }}
-                    className="px-4 py-2 bg-indigo-700 text-white text-xs font-black rounded-lg hover:bg-indigo-600 cursor-pointer"
-                  >
-                    सहेजें
-                  </button>
-                </div>
-              </div>
-            )}
-
+            {/* API Key UI Removed - AI Strategy is now Offline MOCKED */}
             <div className="bg-indigo-50/60 border border-indigo-150 p-4 rounded-xl flex items-start gap-3">
               <Sparkles className="w-5 h-5 text-indigo-700 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
