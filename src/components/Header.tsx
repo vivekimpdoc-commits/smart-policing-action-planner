@@ -37,17 +37,17 @@ export function Header({
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] uppercase tracking-widest text-indigo-600 font-extrabold bg-indigo-600/10 px-2 py-0.5 rounded border border-indigo-600/20">
+              <span className="text-[9px] uppercase tracking-widest text-indigo-700 font-extrabold bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200 shadow-sm">
                 राजकीय पुलिस प्रशासनिक सेवा
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-emerald-450 font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-500/20 animate-pulse">
+              <span className="text-[9px] uppercase tracking-widest text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shadow-sm animate-pulse">
                 AI समर्थित
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-serif italic text-slate-900 mt-1 leading-tight tracking-tight">
-              स्मार्ट पुलिसिंग कार्ययोजना <span className="text-indigo-600 font-sans not-italic font-light ml-1 text-base sm:text-lg select-text">व नीति योजनाकार</span>
+            <h1 className="text-xl sm:text-2xl font-serif italic text-slate-900 mt-1.5 leading-tight tracking-tight drop-shadow-sm">
+              स्मार्ट पुलिसिंग कार्ययोजना <span className="bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent font-sans not-italic font-extrabold ml-1 text-base sm:text-lg select-text">व नीति योजनाकार</span>
             </h1>
-            <p className="text-slate-600 text-[10px] uppercase tracking-widest mt-0.5 font-bold">
+            <p className="text-slate-500 text-[10px] uppercase tracking-widest mt-1 font-bold">
               10 मुख्य प्रशासनिक प्राथमिकता क्षेत्रों की विस्तृत राजकीय रणनीति एवं क्रियान्वयन प्रणाली
             </p>
           </div>
