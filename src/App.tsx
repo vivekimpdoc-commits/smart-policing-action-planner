@@ -286,7 +286,7 @@ export default function App() {
   const activeSector = sectors.find(sec => sec.id === activeSectorId) || sectors[0];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans subpixel-antialiased selection:bg-amber-500/20 selection:text-white">
+    <div className="min-h-screen bg-transparent text-slate-900 flex flex-col font-sans subpixel-antialiased selection:bg-indigo-200 selection:text-indigo-900">
       
       {/* HEADER BAR */}
       <Header 
@@ -345,13 +345,13 @@ export default function App() {
       </main>
 
       {/* FOOTER BAR */}
-      <footer className="bg-slate-900/60 border-t border-slate-850 py-6 text-center select-none text-xs text-slate-450 max-w-none w-full print:hidden backdrop-blur-md">
+      <footer className="bg-white/60 border-t border-slate-200 py-6 text-center select-none text-xs text-slate-500 max-w-none w-full print:hidden backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 space-y-2.5">
-          <div className="flex items-center justify-center gap-1.5 text-amber-500 font-semibold uppercase tracking-wider">
+          <div className="flex items-center justify-center gap-1.5 text-indigo-600 font-semibold uppercase tracking-wider">
             <Landmark className="w-4 h-4" />
             <span>राष्ट्रीय कानून व्यवस्था और सुरक्षा डेटाबेस प्रणाली</span>
           </div>
-          <p className="leading-relaxed text-slate-400 max-w-md mx-auto text-xs">
+          <p className="leading-relaxed text-slate-600 max-w-md mx-auto text-xs">
             यह प्रणाली सुरक्षा तंत्र के सुदृढ़ीकरण, मानवाधिकारों के संरक्षण, और निष्पक्ष कानूनी विवेचनाओं को पूर्णतः ऑनलाइन एवं पारदर्शी योजनाबद्ध प्रारूप में संरेखित करने के लिए अधिकृत है।
           </p>
           <p className="text-[10px] text-slate-500">
@@ -362,11 +362,11 @@ export default function App() {
 
       {/* 🖨️ SPECIALIZED OFF-THE-GRID STYLED PRINTABLE REPORT CONTAINER (HIDDEN VIA CSS EXCEPT DURING PRINT WINDOW) */}
       <div className="hidden print:block print:bg-white print:text-black p-8 space-y-8 absolute inset-0 text-slate-900 leading-normal select-text">
-        <center className="space-y-3 pb-6 border-b-4 border-slate-900">
+        <center className="space-y-3 pb-6 border-b-4 border-slate-200">
           <h1 className="text-3xl font-black uppercase tracking-tight text-slate-900 font-serif">
             राष्ट्रीय पुलिस प्रशासनिक सेवा
           </h1>
-          <h2 className="text-xl font-bold bg-slate-900 text-white px-4 py-1.5 rounded inline-block">
+          <h2 className="text-xl font-bold bg-white text-slate-900 px-4 py-1.5 rounded inline-block">
             10-सूत्रीय स्मार्ट पुलिसिंग मास्टर कार्ययोजना (Official Action SOP Dossier)
           </h2>
           <p className="text-xs text-slate-600 font-semibold tracking-wider">

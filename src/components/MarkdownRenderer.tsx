@@ -24,9 +24,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h4 
           key={index} 
-          className="text-lg font-bold text-amber-500 mt-6 mb-3 border-b border-slate-700 pb-1 flex items-center gap-2"
+          className="text-lg font-bold text-indigo-600 mt-6 mb-3 border-b border-slate-300 pb-1 flex items-center gap-2"
         >
-          <span className="w-1.5 h-4 bg-amber-500 rounded-sm"></span>
+          <span className="w-1.5 h-4 bg-indigo-600 rounded-sm"></span>
           {parseBoldText(headerText)}
         </h4>
       );
@@ -37,9 +37,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h3 
           key={index} 
-          className="text-xl font-bold text-amber-500 mt-8 mb-4 border-b-2 border-slate-700 pb-2 flex items-center gap-2"
+          className="text-xl font-bold text-indigo-600 mt-8 mb-4 border-b-2 border-slate-300 pb-2 flex items-center gap-2"
         >
-          <span className="w-2 h-5 bg-amber-500 rounded-sm"></span>
+          <span className="w-2 h-5 bg-indigo-600 rounded-sm"></span>
           {parseBoldText(headerText)}
         </h3>
       );
@@ -50,7 +50,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h2 
           key={index} 
-          className="text-2xl font-black text-amber-500 mt-8 mb-4 tracking-tight"
+          className="text-2xl font-black text-indigo-600 mt-8 mb-4 tracking-tight"
         >
           {parseBoldText(headerText)}
         </h2>
@@ -62,8 +62,8 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       const listText = trimmed.replace(/^[\*\-]\s*/, "");
       return (
         <ul key={index} className="list-none pl-4 my-1.5">
-          <li className="text-slate-200 text-sm md:text-base leading-relaxed flex items-start gap-2">
-            <span className="text-amber-500 text-xs mt-1.5 flex-shrink-0">●</span>
+          <li className="text-slate-800 text-sm md:text-base leading-relaxed flex items-start gap-2">
+            <span className="text-indigo-600 text-xs mt-1.5 flex-shrink-0">●</span>
             <div>{parseBoldText(listText)}</div>
           </li>
         </ul>
@@ -77,10 +77,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       const text = numberedMatch[2];
       return (
         <div key={index} className="pl-2 my-2 flex items-start gap-3">
-          <span className="bg-amber-500/10 text-amber-500 font-bold text-xs px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5">
+          <span className="bg-indigo-600/10 text-indigo-600 font-bold text-xs px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5">
             {num}
           </span>
-          <div className="text-slate-100 text-sm md:text-base leading-relaxed">
+          <div className="text-slate-900 text-sm md:text-base leading-relaxed">
             {parseBoldText(text)}
           </div>
         </div>
@@ -89,13 +89,13 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
     // Default Paragraph text
     return (
-      <p key={index} className="text-slate-300 text-sm md:text-base leading-relaxed my-2">
+      <p key={index} className="text-slate-700 text-sm md:text-base leading-relaxed my-2">
         {parseBoldText(trimmed)}
       </p>
     );
   });
 
-  return <div className="space-y-1.5 text-slate-100 py-1">{renderedElements}</div>;
+  return <div className="space-y-1.5 text-slate-900 py-1">{renderedElements}</div>;
 }
 
 // Simple parser to make **text** bold
@@ -109,7 +109,7 @@ function parseBoldText(text: string) {
     // Odd indices are surrounded by **
     if (i % 2 === 1) {
       return (
-        <strong key={i} className="font-semibold text-amber-400">
+        <strong key={i} className="font-semibold text-indigo-600">
           {part}
         </strong>
       );
