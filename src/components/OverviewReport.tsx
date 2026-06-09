@@ -1,6 +1,7 @@
 import React from "react";
 import * as LucideIcons from "lucide-react";
 import { PrioritySector } from "../data";
+import { NotificationHistoryView } from "./NotificationHistoryView";
 
 interface OverviewReportProps {
   sectors: PrioritySector[];
@@ -144,6 +145,9 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
           );
         })}
       </div>
+      
+      {/* Notification History Log */}
+      <NotificationHistoryView />
     </div>
   );
 }

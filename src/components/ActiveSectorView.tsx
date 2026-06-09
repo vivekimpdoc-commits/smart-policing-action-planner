@@ -150,6 +150,21 @@ export function ActiveSectorView({
       if (data.success) {
         setActiveNotification(prev => prev ? { ...prev, sending: false, success: true } : null);
         
+        // Save to local storage for history
+        const newRecord = {
+          id: Math.random().toString(36).substring(2, 9),
+          taskTitle,
+          owner,
+          phone,
+          email,
+          timeline,
+          timestamp: new Date().toISOString(),
+          status: "Success"
+        };
+        const existing = JSON.parse(localStorage.getItem("smart-policing-notifications") || "[]");
+        localStorage.setItem("smart-policing-notifications", JSON.stringify([newRecord, ...existing]));
+        window.dispatchEvent(new Event('storage')); // trigger update in other components
+        
         // If it's a test email, open the link or show it
         if (data.details && data.details.email && data.details.email.includes('Ethereal')) {
           const urlMatch = data.details.email.match(/(https?:\/\/[^\s]+)/);
@@ -159,6 +174,20 @@ export function ActiveSectorView({
           }
         }
       } else {
+        const failedRecord = {
+          id: Math.random().toString(36).substring(2, 9),
+          taskTitle,
+          owner,
+          phone,
+          email,
+          timeline,
+          timestamp: new Date().toISOString(),
+          status: "Failed"
+        };
+        const existing = JSON.parse(localStorage.getItem("smart-policing-notifications") || "[]");
+        localStorage.setItem("smart-policing-notifications", JSON.stringify([failedRecord, ...existing]));
+        window.dispatchEvent(new Event('storage'));
+
         alert("Failed to send notification: " + data.message);
         setActiveNotification(prev => prev ? { ...prev, sending: false, success: false } : null);
       }
