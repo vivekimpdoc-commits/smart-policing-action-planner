@@ -303,7 +303,7 @@ export function ActiveSectorView({
             <span className="text-[9px] text-indigo-600 font-extrabold uppercase tracking-widest bg-indigo-600/10 border border-indigo-600/20 px-2 py-0.5 rounded-md">
               कार्ययोजना सेक्टर #{sector.id}
             </span>
-            <h2 className="text-xl sm:text-2xl font-serif italic text-slate-900 mt-1.5 tracking-tight flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-serif italic bg-gradient-to-r from-slate-900 to-indigo-800 bg-clip-text text-transparent mt-1.5 tracking-tight flex items-center gap-2">
               {sector.title}
             </h2>
             <p className="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5 uppercase">

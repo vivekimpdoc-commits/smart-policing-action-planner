@@ -24,9 +24,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h4 
           key={index} 
-          className="text-lg font-bold text-indigo-600 mt-6 mb-3 border-b border-slate-300 pb-1 flex items-center gap-2"
+          className="text-lg font-extrabold text-slate-800 mt-6 mb-3 border-b border-slate-200 pb-1 flex items-center gap-2"
         >
-          <span className="w-1.5 h-4 bg-indigo-600 rounded-sm"></span>
+          <span className="w-1.5 h-4 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-sm shadow-sm"></span>
           {parseBoldText(headerText)}
         </h4>
       );
@@ -37,9 +37,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h3 
           key={index} 
-          className="text-xl font-bold text-indigo-600 mt-8 mb-4 border-b-2 border-slate-300 pb-2 flex items-center gap-2"
+          className="text-xl font-black text-slate-900 mt-8 mb-4 border-b-2 border-slate-200 pb-2 flex items-center gap-2"
         >
-          <span className="w-2 h-5 bg-indigo-600 rounded-sm"></span>
+          <span className="w-2 h-5 bg-gradient-to-b from-indigo-600 to-blue-600 rounded-sm shadow-sm"></span>
           {parseBoldText(headerText)}
         </h3>
       );
@@ -50,7 +50,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       return (
         <h2 
           key={index} 
-          className="text-2xl font-black text-indigo-600 mt-8 mb-4 tracking-tight"
+          className="text-2xl font-black bg-gradient-to-r from-indigo-700 to-blue-600 bg-clip-text text-transparent mt-8 mb-4 tracking-tight drop-shadow-sm"
         >
           {parseBoldText(headerText)}
         </h2>
@@ -109,7 +109,7 @@ function parseBoldText(text: string) {
     // Odd indices are surrounded by **
     if (i % 2 === 1) {
       return (
-        <strong key={i} className="font-semibold text-indigo-600">
+        <strong key={i} className="font-extrabold text-slate-900">
           {part}
         </strong>
       );
