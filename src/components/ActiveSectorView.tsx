@@ -7,7 +7,6 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import { PrioritySector, ActionStep } from "../data";
 import { MarkdownRenderer } from "./MarkdownRenderer";
-import { UserCredentials } from "./Login";
 
 // Helper to provide realistic default contact details for governmental departments
 export const getFallbackContact = (owner: string) => {
@@ -77,7 +76,6 @@ interface ActiveSectorViewProps {
   onEditAction: (sectorId: number, actionId: string, updated: Partial<ActionStep>) => void;
   generatedStrategies: { [key: string]: string };
   onSaveStrategy: (sectorId: number, scenarioKey: string, text: string) => void;
-  loggedInUser?: UserCredentials | null;
 }
 
 export function ActiveSectorView({
@@ -87,8 +85,7 @@ export function ActiveSectorView({
   onDeleteAction,
   onEditAction,
   generatedStrategies,
-  onSaveStrategy,
-  loggedInUser
+  onSaveStrategy
 }: ActiveSectorViewProps) {
   // Tabs: "actions" (SOP Checklist) | "ai-advisor" (AI Advisor) | "pillars" (Pillars)
   const [activeTab, setActiveTab] = useState<"actions" | "ai-advisor" | "pillars">("actions");
@@ -136,16 +133,13 @@ export function ActiveSectorView({
     });
 
     try {
-      const targetPhone = loggedInUser?.phone || phone;
-      const targetEmail = loggedInUser?.email || email;
-
       const response = await fetch('http://localhost:3001/api/send-notification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          owner, // Send original owner name to display in the email body
-          phones: targetPhone ? targetPhone.split(',').map(p => p.trim()) : [],
-          emails: targetEmail ? targetEmail.split(',').map(e => e.trim()) : [],
+          owner, 
+          phones: phone ? phone.split(',').map(p => p.trim()) : [],
+          emails: email ? email.split(',').map(e => e.trim()) : [],
           taskTitle,
           timeline
         })
@@ -171,11 +165,10 @@ export function ActiveSectorView({
         localStorage.setItem("smart-policing-notifications", JSON.stringify([newRecord, ...existing]));
         window.dispatchEvent(new Event('storage')); // trigger update in other components
         
-        // If it's a test email, open the link or show it
+        // If it's a test email, open the link silently in background
         if (data.details && data.details.email && data.details.email.includes('Ethereal')) {
           const urlMatch = data.details.email.match(/(https?:\/\/[^\s]+)/);
           if (urlMatch) {
-            alert(`Email sent successfully (Test Mode)!\n\nClick OK to view the email in your browser: \n${urlMatch[1]}`);
             window.open(urlMatch[1], '_blank');
           }
         }

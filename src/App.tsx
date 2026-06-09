@@ -4,6 +4,7 @@ import { Header } from "./components/Header";
 import { PriorityList } from "./components/PriorityList";
 import { ActiveSectorView } from "./components/ActiveSectorView";
 import { OverviewReport } from "./components/OverviewReport";
+import { NotificationHistoryView } from "./components/NotificationHistoryView";
 import { Login, UserCredentials } from "./components/Login";
 import { 
   Building2, Award, Landmark, CheckSquare, Sparkles, Scale, Info, 
@@ -292,20 +293,6 @@ export default function App() {
   const overallProgress = calculateOverallProgress();
   const activeSector = sectors.find(sec => sec.id === activeSectorId) || sectors[0];
 
-  const handleLogin = (user: UserCredentials) => {
-    setLoggedInUser(user);
-    localStorage.setItem("police_planner_user", JSON.stringify(user));
-  };
-
-  const handleLogout = () => {
-    setLoggedInUser(null);
-    localStorage.removeItem("police_planner_user");
-  };
-
-  if (!loggedInUser) {
-    return <Login onLogin={handleLogin} />;
-  }
-
   return (
     <div className="min-h-screen bg-transparent text-slate-900 flex flex-col font-sans subpixel-antialiased">
       
@@ -317,8 +304,6 @@ export default function App() {
         onPrint={handlePrintTrigger}
         onReset={handleResetAll}
         isSupabaseConnected={isSupabaseConnected}
-        loggedInUser={loggedInUser}
-        onLogout={handleLogout}
       />
 
       {/* WORKSPACE WRAPPER */}
@@ -326,31 +311,37 @@ export default function App() {
         
         {/* VIEW A: TRADITIONAL INTERACTIVE DASHBOARD PANEL */}
         {viewMode === "dashboard" && sectors.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              
+              {/* LEFT PROFILE SIDEBAR: SECTOR MENU (10 POINT GRID) */}
+              <div className="lg:col-span-4 h-full">
+                <PriorityList 
+                  sectors={sectors}
+                  activeId={activeSectorId}
+                  onSelectSector={(id) => setActiveSectorId(id)}
+                />
+              </div>
+
+              {/* MIDDLE COCKPIT: OPERATIONAL BOARD FOR SELECTED POINT */}
+              <div className="lg:col-span-8 h-full">
+                <ActiveSectorView 
+                  sector={activeSector}
+                  onToggleAction={handleToggleAction}
+                  onAddCustomAction={handleAddCustomAction}
+                  onDeleteAction={handleDeleteAction}
+                  onEditAction={handleEditAction}
+                  generatedStrategies={generatedStrategies}
+                  onSaveStrategy={handleSaveStrategy}
+                />
+              </div>
+
+            </div>
             
-            {/* LEFT PROFILE SIDEBAR: SECTOR MENU (10 POINT GRID) */}
-            <div className="lg:col-span-4 h-full">
-              <PriorityList 
-                sectors={sectors}
-                activeId={activeSectorId}
-                onSelectSector={(id) => setActiveSectorId(id)}
-              />
+            {/* NOTIFICATION HISTORY - Now visible right on the dashboard! */}
+            <div className="mt-8">
+              <NotificationHistoryView />
             </div>
-
-            {/* MIDDLE COCKPIT: OPERATIONAL BOARD FOR SELECTED POINT */}
-            <div className="lg:col-span-8 h-full">
-              <ActiveSectorView 
-                sector={activeSector}
-                onToggleAction={handleToggleAction}
-                onAddCustomAction={handleAddCustomAction}
-                onDeleteAction={handleDeleteAction}
-                onEditAction={handleEditAction}
-                generatedStrategies={generatedStrategies}
-                onSaveStrategy={handleSaveStrategy}
-                loggedInUser={loggedInUser}
-              />
-            </div>
-
           </div>
         )}
 
