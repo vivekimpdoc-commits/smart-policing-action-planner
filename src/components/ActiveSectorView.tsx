@@ -370,7 +370,7 @@ export function ActiveSectorView({
             <span className="text-[10px] text-indigo-700 font-extrabold uppercase tracking-widest bg-white/60 border border-indigo-200 shadow-sm px-2.5 py-1 rounded-lg inline-block mb-1">
               कार्ययोजना सेक्टर #{sector.id}
             </span>
-            <h2 className="text-xl sm:text-3xl font-serif font-black italic bg-gradient-to-r from-indigo-900 via-indigo-700 to-purple-800 bg-clip-text text-transparent mt-1.5 tracking-tight flex items-center gap-2 py-1 pr-2 drop-shadow-sm">
+            <h2 className="text-lg sm:text-2xl font-serif font-bold bg-gradient-to-r from-indigo-900 via-indigo-700 to-purple-800 bg-clip-text text-transparent mt-1.5 tracking-tight flex items-center gap-2 py-1 pr-2 drop-shadow-sm leading-snug">
               {sector.title}
             </h2>
             <p className="text-[10px] text-slate-500 font-mono font-bold tracking-widest mt-0.5 uppercase">
