@@ -19,7 +19,7 @@ export function Header({
   isSupabaseConnected
 }: HeaderProps) {
   return (
-    <header className="relative bg-white/90 backdrop-blur-md border-b border-slate-200/85 text-slate-900 select-none shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
+    <header className="sticky top-0 z-40 bg-white/60 backdrop-blur-xl border-b border-white/50 text-slate-900 select-none shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
       {/* Tricolor Border Accent on Top */}
       <div className="h-1 w-full flex">
         <div className="bg-[#f39c12] h-full flex-1"></div>

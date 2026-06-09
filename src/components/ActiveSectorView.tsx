@@ -356,94 +356,100 @@ export function ActiveSectorView({
   const progressPercent = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
 
   return (
-    <div className="glass-panel rounded-2xl select-none text-slate-900 overflow-hidden shadow-[0_4px_30px_rgba(0,0,0,0.2)] flex flex-col h-full min-h-[600px] relative border border-slate-200/80 animate-fadeIn">
+    <div className="glass-panel rounded-3xl select-none text-slate-900 overflow-hidden flex flex-col h-full min-h-[600px] relative animate-fadeIn">
       
       {/* Decorative Blue/Golden Corner lines */}
       <div className="absolute top-0 right-0 p-4 pointer-events-none select-none z-10">
-        <div className="w-16 h-16 border-r border-t border-indigo-600/15"></div>
+        <div className="w-16 h-16 border-r-2 border-t-2 border-indigo-500/20 rounded-tr-2xl"></div>
       </div>
 
       {/* Active Sector Banner Section */}
-      <div className="bg-white/30 p-5 sm:p-6 border-b border-slate-200/60">
+      <div className="bg-white/40 p-5 sm:p-7 border-b border-white/50 backdrop-blur-md">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="space-y-1">
-            <span className="text-[9px] text-indigo-600 font-extrabold uppercase tracking-widest bg-indigo-600/10 border border-indigo-600/20 px-2 py-0.5 rounded-md">
+            <span className="text-[10px] text-indigo-700 font-extrabold uppercase tracking-widest bg-white/60 border border-indigo-200 shadow-sm px-2.5 py-1 rounded-lg inline-block mb-1">
               कार्ययोजना सेक्टर #{sector.id}
             </span>
-            <h2 className="text-xl sm:text-2xl font-serif italic bg-gradient-to-r from-slate-900 to-indigo-800 bg-clip-text text-transparent mt-1.5 tracking-tight flex items-center gap-2 py-1 pr-2">
+            <h2 className="text-xl sm:text-3xl font-serif font-black italic bg-gradient-to-r from-indigo-900 via-indigo-700 to-purple-800 bg-clip-text text-transparent mt-1.5 tracking-tight flex items-center gap-2 py-1 pr-2 drop-shadow-sm">
               {sector.title}
             </h2>
-            <p className="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5 uppercase">
+            <p className="text-[10px] text-slate-500 font-mono font-bold tracking-widest mt-0.5 uppercase">
               {sector.englishTitle}
             </p>
           </div>
 
-          <div className="bg-white/50 border border-slate-200 p-3 rounded-xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-sm">
+          <div className="glass-panel p-3 rounded-2xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-lg shadow-indigo-900/5">
             <div className="text-right">
-              <span className="text-[9px] text-slate-500 uppercase font-bold block tracking-wider">
+              <span className="text-[9px] text-slate-500 uppercase font-black block tracking-widest">
                 लक्ष्य पूरा इंडेक्स
               </span>
-              <span className={`text-sm font-mono font-black ${progressPercent === 100 ? "text-emerald-500" : "text-indigo-450"}`}>
+              <span className={`text-base font-mono font-black ${progressPercent === 100 ? "text-emerald-500" : "text-indigo-600"}`}>
                 {progressPercent}%
               </span>
             </div>
-            <div className="w-10 h-10 relative flex items-center justify-center">
-              <svg className="w-10 h-10 transform -rotate-90">
-                <circle cx="20" cy="20" r="16" className="text-slate-800" strokeWidth="2.5" fill="transparent" stroke="currentColor"/>
-                <circle cx="20" cy="20" r="16" 
+            <div className="w-12 h-12 relative flex items-center justify-center">
+              <svg className="w-12 h-12 transform -rotate-90 filter drop-shadow-md">
+                <circle cx="24" cy="24" r="18" className="text-slate-200/50" strokeWidth="3" fill="transparent" stroke="currentColor"/>
+                <circle cx="24" cy="24" r="18" 
                   className={progressPercent === 100 ? "text-emerald-500" : "text-indigo-600"} 
-                  strokeWidth="2.5" 
+                  strokeWidth="3.5" 
                   fill="transparent" 
-                  strokeDasharray={100}
-                  strokeDashoffset={100 - progressPercent}
+                  strokeDasharray={113}
+                  strokeDashoffset={113 - (progressPercent * 1.13)}
                   strokeLinecap="round"
-                  stroke="currentColor"
+                  stroke="url(#gradient)"
                  />
+                 <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#4f46e5" />
+                    <stop offset="100%" stopColor="#9333ea" />
+                  </linearGradient>
+                </defs>
               </svg>
             </div>
           </div>
         </div>
 
-        <p className="text-slate-350 text-sm leading-relaxed mt-4 bg-slate-50/20 p-3.5 rounded-xl border border-slate-200 shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]">
+        <p className="text-slate-700 font-medium text-sm leading-relaxed mt-5 bg-white/60 p-4 rounded-2xl border border-white/80 shadow-[0_2px_10px_rgba(0,0,0,0.02)] backdrop-blur-sm">
           {sector.description}
         </p>
       </div>
 
       {/* Switch Workspace Tabs */}
-      <div className="flex bg-slate-50/20 border-b border-slate-200 px-2 gap-1.5 flex-shrink-0">
+      <div className="flex bg-white/40 border-b border-white/50 px-3 gap-2 flex-shrink-0 pt-2">
         <button
           onClick={() => setActiveTab("actions")}
-          className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`px-5 py-3 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer rounded-t-xl ${
             activeTab === "actions"
-              ? "border-indigo-600 text-indigo-600 bg-white/40"
-              : "border-transparent text-slate-600 hover:text-slate-800"
+              ? "bg-white/80 text-indigo-700 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] border-t border-x border-white/80"
+              : "text-slate-500 hover:text-indigo-600 hover:bg-white/50"
           }`}
         >
-          <CheckSquare className="w-4 h-4 text-indigo-600" />
+          <CheckSquare className="w-4 h-4" />
           <span>राजकीय क्रियान्वयन चेकलिस्ट</span>
         </button>
 
         <button
           onClick={() => setActiveTab("ai-advisor")}
-          className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`px-5 py-3 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer rounded-t-xl ${
             activeTab === "ai-advisor"
-              ? "border-indigo-600 text-indigo-600 bg-white/40"
-              : "border-transparent text-slate-600 hover:text-slate-800"
+              ? "bg-white/80 text-indigo-700 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] border-t border-x border-white/80"
+              : "text-slate-500 hover:text-indigo-600 hover:bg-white/50"
           }`}
         >
-          <Sparkles className="w-4 h-4 text-indigo-600" />
+          <Sparkles className="w-4 h-4" />
           <span>AI प्रशासनिक रणनीति सहायक</span>
         </button>
 
         <button
           onClick={() => setActiveTab("pillars")}
-          className={`px-4 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`px-5 py-3 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer rounded-t-xl ${
             activeTab === "pillars"
-              ? "border-indigo-600 text-indigo-600 bg-white/40"
-              : "border-transparent text-slate-600 hover:text-slate-800"
+              ? "bg-white/80 text-indigo-700 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] border-t border-x border-white/80"
+              : "text-slate-500 hover:text-indigo-600 hover:bg-white/50"
           }`}
         >
-          <BookOpen className="w-4 h-4 text-indigo-600" />
+          <BookOpen className="w-4 h-4" />
           <span>मुख्य प्रशासनिक स्तंभ ({sector.pillars.length})</span>
         </button>
       </div>
@@ -593,10 +599,10 @@ export function ActiveSectorView({
                 return (
                   <div 
                     key={action.id}
-                    className={`border rounded-xl p-4 transition-all duration-300 ${
+                    className={`glass-card-interactive rounded-2xl p-5 mb-4 ${
                       action.completed 
-                        ? "bg-[#fafafa]/80 border-slate-200/80 opacity-80" 
-                        : "bg-white border-slate-200/80 hover:border-indigo-600/20 hover:shadow-md shadow-sm"
+                        ? "bg-white/40 border-white/30 opacity-75" 
+                        : "bg-white/70 border-white/60"
                     }`}
                   >
                     {isEditing ? (

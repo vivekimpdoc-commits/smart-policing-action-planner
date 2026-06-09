@@ -80,26 +80,26 @@ export function NotificationHistoryView() {
   }
 
   return (
-    <div className="mt-10 bg-white/40 backdrop-blur-xl border border-slate-200/60 p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgba(79,70,229,0.06)] relative overflow-hidden">
+    <div className="mt-10 glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 relative z-10">
         <div>
-          <h2 className="text-xl sm:text-2xl font-serif italic text-slate-800 flex items-center gap-2 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-serif font-black italic bg-gradient-to-r from-indigo-900 to-purple-800 bg-clip-text text-transparent flex items-center gap-2 tracking-tight">
             <LucideIcons.History className="w-6 h-6 text-indigo-600" />
-            संसूचना प्रेषण इतिहास <span className="text-slate-500 font-sans not-italic text-sm ml-2">(Notification Logs)</span>
+            संसूचना प्रेषण इतिहास <span className="text-slate-500 font-sans not-italic text-sm font-medium ml-2">(Notification Logs)</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1 font-medium">अब तक भेजे गए सभी प्रशासनिक आदेशों और संदेशों का विवरण।</p>
+          <p className="text-xs text-slate-500 mt-1 font-bold tracking-wide">अब तक भेजे गए सभी प्रशासनिक आदेशों और संदेशों का विवरण।</p>
         </div>
         
         <button
           onClick={handleDownloadCSV}
-          className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+          className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-400 text-white px-5 py-2.5 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all"
         >
           <LucideIcons.Download className="w-4 h-4" />
           एक्सेल में डाउनलोड करें 📊
         </button>
       </div>
 
-      <div className="overflow-x-auto relative z-10 rounded-2xl border border-slate-200 bg-white/50">
+      <div className="overflow-x-auto relative z-10 rounded-2xl border border-white/60 bg-white/40 shadow-sm backdrop-blur-sm">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-100/80 text-slate-600 text-[10px] uppercase tracking-wider font-black">
