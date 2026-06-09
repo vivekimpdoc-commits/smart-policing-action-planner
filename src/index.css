@@ -31,23 +31,22 @@ body {
 
 /* Custom styling for sleek layout scrollbars */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.2); /* slate-100 */
-  border-radius: 99px;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3); /* slate-400 */
+  background: rgba(148, 163, 184, 0.2); /* very light slate-400 */
   border-radius: 99px;
   transition: background 0.3s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.5); /* slate-500 */
+  background: rgba(100, 116, 139, 0.4); /* slate-500 */
 }
 
 /* Glassmorphism theme classes */

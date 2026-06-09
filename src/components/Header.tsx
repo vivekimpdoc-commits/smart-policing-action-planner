@@ -98,7 +98,7 @@ export function Header({
               title={viewMode === "dashboard" ? "सभी 10 योजनाओं का ओवरव्यू देखें" : "दैनिक कंसोल पर लौटें"}
             >
               <BarChart3 className="w-4 h-4" />
-              <span>{viewMode === "dashboard" ? "समग्र रिपोर्ट" : "प्रशासनिक कंसोल"}</span>
+              <span>{viewMode === "dashboard" ? "प्रगति डैशबोर्ड" : "प्रशासनिक कंसोल"}</span>
             </button>
 
             <button
