@@ -289,8 +289,6 @@ export function ActiveSectorView({
     ];
 
     try {
-      const ai = new GoogleGenAI({ apiKey: key });
-
       const prompt = `आप भारत के सर्वोच्च पुलिस प्रशासन अधिकारी (Director General of Police - DGP) और स्मार्ट पुलिसिंग मामलों के मुख्य नीति रणनीतिकार हैं।
 
 आपको निम्नलिखित पुलिसिंग/सुरक्षा प्राथमिक क्षेत्र पर एक अत्यंत व्यापक, व्यावहारिक, संहिताबद्ध, और जमीनी स्तर पर क्रियान्वयन योग्य कार्ययोजना (SOP) तथा रणनीति रोडमैप तैयार करना है:
@@ -309,24 +307,34 @@ export function ActiveSectorView({
 
 नोट: प्रतिक्रिया सीधे कार्ययोजना शीर्षक से शुरू करें।`;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: prompt,
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
       });
 
-      const generatedText = response.text;
-      onSaveStrategy(sector.id, strategyStorageKey, generatedText || "");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || "Unknown API error");
+      }
+
+      const data = await response.json();
+      const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      
+      onSaveStrategy(sector.id, strategyStorageKey, generatedText);
     } catch (err: any) {
       console.error(err);
       const msg = err?.message || err?.toString() || "";
       
-      if (msg.includes("API_KEY_INVALID") || msg.includes("401")) {
+      if (msg.includes("API_KEY_INVALID") || msg.includes("401") || msg.toLowerCase().includes("api key not valid")) {
         setAiError("API Key अमान्य है। कृपया सही Gemini API Key दर्ज करें।");
         setShowApiKeyInput(true);
       } else if (msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("quota")) {
         setAiError("आपका API कोटा (Limit) खत्म हो गया है। कृपया कुछ समय बाद प्रयास करें या दूसरी API Key का उपयोग करें।");
       } else {
-        setAiError("रणनीति जनरेट करने में तकनीकी त्रुटि हुई। कृपया नेटवर्क जांचें।");
+        setAiError(`रणनीति जनरेट करने में तकनीकी त्रुटि हुई। (${msg})`);
       }
     } finally {
       intervals.forEach(clearTimeout);
