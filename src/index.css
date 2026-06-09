@@ -14,6 +14,16 @@ body {
   min-height: 100vh;
 }
 
+/* Global text selection for high legibility */
+::selection {
+  background-color: #c7d2fe; /* indigo-200 */
+  color: #1e1b4b; /* indigo-950 */
+}
+::-moz-selection {
+  background-color: #c7d2fe; /* indigo-200 */
+  color: #1e1b4b; /* indigo-950 */
+}
+
 /* Custom styling for sleek layout scrollbars */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;

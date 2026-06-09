@@ -286,7 +286,7 @@ export default function App() {
   const activeSector = sectors.find(sec => sec.id === activeSectorId) || sectors[0];
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-900 flex flex-col font-sans subpixel-antialiased selection:bg-indigo-200 selection:text-indigo-900">
+    <div className="min-h-screen bg-transparent text-slate-900 flex flex-col font-sans subpixel-antialiased">
       
       {/* HEADER BAR */}
       <Header 
