@@ -397,7 +397,7 @@ export function ActiveSectorView({
 
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="flex items-center gap-1 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-700 hover:text-slate-900 px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-1 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-700 hover:text-white px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer shadow-sm"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>नया कार्य जोड़ें</span>
@@ -506,7 +506,7 @@ export function ActiveSectorView({
                     </button>
                     <button 
                       type="submit" 
-                      className="px-3.5 py-1.5 text-xs font-black bg-indigo-700 text-slate-900 hover:bg-indigo-600 rounded-lg shadow-sm cursor-pointer"
+                      className="px-3.5 py-1.5 text-xs font-black bg-indigo-700 text-white hover:bg-indigo-600 rounded-lg shadow-sm cursor-pointer"
                     >
                       सुरक्षित करें
                     </button>
@@ -710,7 +710,7 @@ export function ActiveSectorView({
                                   action.timeline
                                 );
                               }}
-                              className="flex items-center gap-1 justify-center bg-indigo-50/80 text-indigo-700 border border-indigo-200 hover:bg-indigo-700 hover:text-slate-900 px-2 py-0.5 rounded text-[10px] font-black transition-all cursor-pointer h-5.5 shadow-xs"
+                              className="flex items-center gap-1 justify-center bg-indigo-50/80 text-indigo-700 border border-indigo-200 hover:bg-indigo-700 hover:text-white px-2 py-0.5 rounded text-[10px] font-black transition-all cursor-pointer h-5.5 shadow-xs"
                               title="प्रभारी को संदेश प्रेषित करें"
                             >
                               <span>संसूचना भेजें 📱</span>
@@ -801,7 +801,7 @@ export function ActiveSectorView({
                       const el = document.getElementById('gemini-key-input') as HTMLInputElement;
                       if (el?.value.trim()) saveApiKey(el.value.trim());
                     }}
-                    className="px-4 py-2 bg-indigo-700 text-slate-900 text-xs font-black rounded-lg hover:bg-indigo-700 cursor-pointer"
+                    className="px-4 py-2 bg-indigo-700 text-white text-xs font-black rounded-lg hover:bg-indigo-600 cursor-pointer"
                   >
                     सहेजें
                   </button>
@@ -834,7 +834,7 @@ export function ActiveSectorView({
                     onClick={() => setSelectedScenarioIndex(scIdx)}
                     className={`p-3 text-left rounded-xl border transition-all text-xs flex flex-col justify-between h-24 cursor-pointer ${
                       selectedScenarioIndex === scIdx 
-                        ? "bg-indigo-700 border-indigo-700 text-slate-900 shadow-md shadow-indigo-600/10" 
+                        ? "bg-indigo-700 border-indigo-700 text-white shadow-md shadow-indigo-600/10" 
                         : "bg-slate-50 border-slate-200 hover:border-indigo-300 text-slate-600 hover:text-indigo-900"
                     }`}
                   >
@@ -867,7 +867,7 @@ export function ActiveSectorView({
             <button
               onClick={handleGenerateAIStrategy}
               disabled={loadingAI}
-              className="w-full bg-indigo-700 hover:bg-indigo-700 text-slate-900 disabled:bg-slate-100 disabled:text-slate-600 disabled:border-slate-200 border border-indigo-700 p-3.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-indigo-650/15"
+              className="w-full bg-indigo-700 hover:bg-indigo-800 text-white disabled:bg-slate-100 disabled:text-slate-600 disabled:border-slate-200 border border-indigo-700 p-3.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shadow-indigo-650/15"
             >
               {loadingAI ? (
                 <>
@@ -1071,7 +1071,7 @@ export function ActiveSectorView({
                   <div className="pt-2">
                     <button
                       onClick={() => setActiveNotification(null)}
-                      className="w-full bg-indigo-700 hover:bg-indigo-700 text-slate-900 p-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-md shadow-indigo-600/10"
+                      className="w-full bg-indigo-700 hover:bg-indigo-800 text-white p-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-md shadow-indigo-600/10"
                     >
                       सत्यापित किया (Ok, Confirm)
                     </button>
