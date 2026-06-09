@@ -120,7 +120,7 @@ export function ActiveSectorView({
     success: boolean;
   } | null>(null);
 
-  const triggerNotification = (taskTitle: string, owner: string, phone: string, email: string, timeline: string) => {
+  const triggerNotification = async (taskTitle: string, owner: string, phone: string, email: string, timeline: string) => {
     setActiveNotification({
       isOpen: true,
       sending: true,
@@ -132,10 +132,41 @@ export function ActiveSectorView({
       success: false
     });
 
-    // Simulated transmission over the government secure gateway
-    setTimeout(() => {
-      setActiveNotification(prev => prev ? { ...prev, sending: false, success: true } : null);
-    }, 2000);
+    try {
+      const response = await fetch('http://localhost:3001/api/send-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          owner,
+          phones: phone ? phone.split(',').map(p => p.trim()) : [],
+          emails: email ? email.split(',').map(e => e.trim()) : [],
+          taskTitle,
+          timeline
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setActiveNotification(prev => prev ? { ...prev, sending: false, success: true } : null);
+        
+        // If it's a test email, open the link or show it
+        if (data.details && data.details.email && data.details.email.includes('Ethereal')) {
+          const urlMatch = data.details.email.match(/(https?:\/\/[^\s]+)/);
+          if (urlMatch) {
+            alert(`Email sent successfully (Test Mode)!\n\nClick OK to view the email in your browser: \n${urlMatch[1]}`);
+            window.open(urlMatch[1], '_blank');
+          }
+        }
+      } else {
+        alert("Failed to send notification: " + data.message);
+        setActiveNotification(prev => prev ? { ...prev, sending: false, success: false } : null);
+      }
+    } catch (err) {
+      console.error("Error triggering notification:", err);
+      alert("Error triggering notification. Make sure the backend server is running.");
+      setActiveNotification(prev => prev ? { ...prev, sending: false, success: false } : null);
+    }
   };
 
   // AI strategy formulation states
