@@ -251,7 +251,7 @@ export function ActiveSectorView({
 नोट: प्रतिक्रिया सीधे कार्ययोजना शीर्षक से शुरू करें।`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         contents: prompt,
       });
 
@@ -259,12 +259,15 @@ export function ActiveSectorView({
       onSaveStrategy(sector.id, strategyStorageKey, generatedText || "");
     } catch (err: any) {
       console.error(err);
-      const msg = err?.message || "";
+      const msg = err?.message || err?.toString() || "";
+      
       if (msg.includes("API_KEY_INVALID") || msg.includes("401")) {
         setAiError("API Key अमान्य है। कृपया सही Gemini API Key दर्ज करें।");
         setShowApiKeyInput(true);
+      } else if (msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("quota")) {
+        setAiError("आपका API कोटा (Limit) खत्म हो गया है। कृपया कुछ समय बाद प्रयास करें या दूसरी API Key का उपयोग करें।");
       } else {
-        setAiError(msg || "रणनीति जनरेट करने में अज्ञात त्रुटि हुई।");
+        setAiError("रणनीति जनरेट करने में तकनीकी त्रुटि हुई। कृपया नेटवर्क जांचें।");
       }
     } finally {
       intervals.forEach(clearTimeout);
