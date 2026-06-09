@@ -17,7 +17,7 @@ export function PriorityList({ sectors, activeId, onSelectSector }: PriorityList
           <LucideIcons.Layers className="text-white w-5 h-5 flex-shrink-0" />
         </div>
         <div>
-          <h3 className="text-[15px] font-black bg-gradient-to-r from-slate-800 to-slate-900 bg-clip-text text-transparent tracking-wide leading-none">
+          <h3 className="text-[15px] font-black bg-gradient-to-r from-slate-800 to-slate-900 bg-clip-text text-transparent tracking-wide leading-tight py-1 -my-1">
             10 राष्ट्रीय प्राथमिकता क्षेत्र
           </h3>
           <span className="text-[9px] text-slate-500 font-extrabold block uppercase mt-1.5 tracking-widest">
