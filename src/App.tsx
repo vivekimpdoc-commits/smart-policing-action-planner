@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PRIORITY_SECTORS, PrioritySector, ActionStep } from "./data";
+import { PRIORITY_SECTORS_HI, PRIORITY_SECTORS_EN, PrioritySector, ActionStep } from "./data";
 import { Header } from "./components/Header";
 import { PriorityList } from "./components/PriorityList";
 import { ActiveSectorView } from "./components/ActiveSectorView";
@@ -11,8 +11,10 @@ import {
   HelpCircle, ChevronRight, FileText, CheckCircle
 } from "lucide-react";
 import { getSupabaseClient } from "./lib/supabase";
+import { useLanguage } from "./contexts/LanguageContext";
 
 export default function App() {
+  const { language } = useLanguage();
   const [loggedInUser, setLoggedInUser] = useState<UserCredentials | null>(null);
   
   // Global Sector state (restored from localStorage if possible)
@@ -25,8 +27,35 @@ export default function App() {
 
   const [isSupabaseConnected, setIsSupabaseConnected] = useState(false);
 
+  // Apply localized data when language changes, preserving completion status
+  useEffect(() => {
+    const localizedData = language === 'en' ? PRIORITY_SECTORS_EN : PRIORITY_SECTORS_HI;
+    
+    setSectors(prevSectors => {
+      if (prevSectors.length === 0) return prevSectors; // Will be initialized by the mount effect
+      
+      return localizedData.map(newSec => {
+        const oldSec = prevSectors.find(s => s.id === newSec.id);
+        if (!oldSec) return newSec;
+        
+        const mergedActions = newSec.defaultActions.map(newAct => {
+          const oldAct = oldSec.defaultActions.find(a => a.id === newAct.id);
+          return oldAct ? { ...newAct, completed: oldAct.completed } : newAct;
+        });
+        
+        const customActions = oldSec.defaultActions.filter(a => a.isCustom);
+        
+        return {
+          ...newSec,
+          defaultActions: [...mergedActions, ...customActions]
+        };
+      });
+    });
+  }, [language]);
+
   // Initialize and load state
   useEffect(() => {
+    const localizedData = language === 'en' ? PRIORITY_SECTORS_EN : PRIORITY_SECTORS_HI;
     const savedUser = localStorage.getItem("police_planner_user");
     if (savedUser) {
       try { setLoggedInUser(JSON.parse(savedUser)); } catch (e) {}
@@ -36,12 +65,30 @@ export default function App() {
 
     if (savedSectors) {
       try {
-        setSectors(JSON.parse(savedSectors));
+        const parsedSectors = JSON.parse(savedSectors) as PrioritySector[];
+        // Map parsed sectors to current language data but preserve completed status
+        const mergedSectors = localizedData.map(newSec => {
+          const oldSec = parsedSectors.find(s => s.id === newSec.id);
+          if (!oldSec) return newSec;
+          
+          const mergedActions = newSec.defaultActions.map(newAct => {
+            const oldAct = oldSec.defaultActions.find(a => a.id === newAct.id);
+            return oldAct ? { ...newAct, completed: oldAct.completed } : newAct;
+          });
+          
+          const customActions = oldSec.defaultActions.filter(a => a.isCustom);
+          
+          return {
+            ...newSec,
+            defaultActions: [...mergedActions, ...customActions]
+          };
+        });
+        setSectors(mergedSectors);
       } catch (e) {
-        setSectors(PRIORITY_SECTORS);
+        setSectors(localizedData);
       }
     } else {
-      setSectors(PRIORITY_SECTORS);
+      setSectors(localizedData);
     }
 
     if (savedStrategies) {
@@ -249,7 +296,11 @@ export default function App() {
 
   // Reset entire application to official defaults
   const handleResetAll = async () => {
-    if (confirm("क्या आप वाकई सभी कस्टमाइजेशन, सब-टास्क और जनरेट की गई AI रणनीतियों को रीसेट कर सरकारी मानकों पर लौटना चाहते हैं?")) {
+    const confirmMsg = language === 'en' 
+      ? "Are you sure you want to reset all customizations, sub-tasks, and generated AI strategies to return to government standards?"
+      : "क्या आप वाकई सभी कस्टमाइजेशन, सब-टास्क और जनरेट की गई AI रणनीतियों को रीसेट कर सरकारी मानकों पर लौटना चाहते हैं?";
+
+    if (confirm(confirmMsg)) {
       localStorage.removeItem("police_planner_sectors");
       localStorage.removeItem("police_planner_strategies");
       
@@ -263,7 +314,8 @@ export default function App() {
         }
       }
 
-      setSectors(PRIORITY_SECTORS);
+      const localizedData = language === 'en' ? PRIORITY_SECTORS_EN : PRIORITY_SECTORS_HI;
+      setSectors(localizedData);
       setGeneratedStrategies({});
       setActiveSectorId(1);
       setViewMode("dashboard");
@@ -363,13 +415,15 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 space-y-2.5">
           <div className="flex items-center justify-center gap-1.5 text-indigo-600 font-semibold uppercase tracking-wider">
             <Landmark className="w-4 h-4" />
-            <span>राष्ट्रीय कानून व्यवस्था और सुरक्षा डेटाबेस प्रणाली</span>
+            <span>{language === 'en' ? "National Law & Order and Security Database System" : "राष्ट्रीय कानून व्यवस्था और सुरक्षा डेटाबेस प्रणाली"}</span>
           </div>
           <p className="leading-relaxed text-slate-600 max-w-md mx-auto text-xs">
-            यह प्रणाली सुरक्षा तंत्र के सुदृढ़ीकरण, मानवाधिकारों के संरक्षण, और निष्पक्ष कानूनी विवेचनाओं को पूर्णतः ऑनलाइन एवं पारदर्शी योजनाबद्ध प्रारूप में संरेखित करने के लिए अधिकृत है।
+            {language === 'en' 
+              ? "This system is authorized to align security mechanism strengthening, human rights protection, and impartial legal investigations completely online and in a transparent planned format."
+              : "यह प्रणाली सुरक्षा तंत्र के सुदृढ़ीकरण, मानवाधिकारों के संरक्षण, और निष्पक्ष कानूनी विवेचनाओं को पूर्णतः ऑनलाइन एवं पारदर्शी योजनाबद्ध प्रारूप में संरेखित करने के लिए अधिकृत है।"}
           </p>
           <p className="text-[10px] text-slate-500">
-            © 2026 इंटेलिजेंट पुलिस प्लानिंग कंसोल। राष्ट्रीय सुरक्षा मार्गदर्शिका संवर्धन। All Rights Reserved.
+            © 2026 {language === 'en' ? "Intelligent Police Planning Console. National Security Guidelines Enhancement." : "इंटेलिजेंट पुलिस प्लानिंग कंसोल। राष्ट्रीय सुरक्षा मार्गदर्शिका संवर्धन।"} All Rights Reserved.
           </p>
         </div>
       </footer>
@@ -378,13 +432,13 @@ export default function App() {
       <div className="hidden print:block print:bg-white print:text-black p-8 space-y-8 absolute inset-0 text-slate-900 leading-normal select-text">
         <center className="space-y-3 pb-6 border-b-4 border-slate-200">
           <h1 className="text-3xl font-black uppercase tracking-tight text-slate-900 font-serif">
-            राष्ट्रीय पुलिस प्रशासनिक सेवा
+            {language === 'en' ? "National Police Administrative Service" : "राष्ट्रीय पुलिस प्रशासनिक सेवा"}
           </h1>
           <h2 className="text-xl font-bold bg-white text-slate-900 px-4 py-1.5 rounded inline-block">
-            10-सूत्रीय स्मार्ट पुलिसिंग मास्टर कार्ययोजना (Official Action SOP Dossier)
+            {language === 'en' ? "10-Point Smart Policing Master Action Plan (Official Action SOP Dossier)" : "10-सूत्रीय स्मार्ट पुलिसिंग मास्टर कार्ययोजना (Official Action SOP Dossier)"}
           </h2>
           <p className="text-xs text-slate-600 font-semibold tracking-wider">
-            मुद्रण तिथि: {new Date().toLocaleDateString("hi-IN")} | समग्र राष्ट्रीय कार्य संपादन सूचकांस्क: {overallProgress}% (रेटिंग: {overallProgress >= 75 ? "A+" : "B"})
+            {language === 'en' ? "Print Date:" : "मुद्रण तिथि:"} {new Date().toLocaleDateString(language === 'en' ? "en-US" : "hi-IN")} | {language === 'en' ? "Overall National Action Execution Index:" : "समग्र राष्ट्रीय कार्य संपादन सूचकांस्क:"} {overallProgress}% ({language === 'en' ? "Rating:" : "रेटिंग:"} {overallProgress >= 75 ? "A+" : "B"})
           </p>
         </center>
 
@@ -396,22 +450,24 @@ export default function App() {
             return (
               <div key={sec.id} className="page-break-inside-avoid space-y-3 pb-6 border-b border-gray-300">
                 <h3 className="text-lg font-extrabold text-slate-900 font-sans">
-                  प्राथमिकता #{sec.id}: {sec.title}
+                  {language === 'en' ? "Priority" : "प्राथमिकता"} #{sec.id}: {sec.title}
                 </h3>
                 <p className="text-sm italic text-gray-700 font-medium">Objective: {sec.objective}</p>
 
                 {/* Subtasks listing */}
                 <div className="space-y-1.5 pl-3">
-                  <h4 className="text-xs uppercase font-extrabold text-slate-800 tracking-wider">कार्रवाई स्थिति:</h4>
+                  <h4 className="text-xs uppercase font-extrabold text-slate-800 tracking-wider">
+                    {language === 'en' ? "Action Status:" : "कार्रवाई स्थिति:"}
+                  </h4>
                   <ul className="list-disc pl-4 text-xs space-y-1">
                     {completed.map(act => (
                       <li key={act.id} className="text-green-800">
-                        <strong>[✔️ पूर्ण] {act.title}</strong> - {act.description} (नोडल: {act.owner})
+                        <strong>[✔️ {language === 'en' ? "Completed" : "पूर्ण"}] {act.title}</strong> - {act.description} ({language === 'en' ? "Nodal:" : "नोडल:"} {act.owner})
                       </li>
                     ))}
                     {pending.map(act => (
                       <li key={act.id} className="text-gray-600">
-                        <strong>[❌ अपूर्ण] {act.title}</strong> - {act.description} (अनुमानित समय: {act.timeline}, नोडल: {act.owner})
+                        <strong>[❌ {language === 'en' ? "Incomplete" : "अपूर्ण"}] {act.title}</strong> - {act.description} ({language === 'en' ? "Est. Time:" : "अनुमानित समय:"} {act.timeline}, {language === 'en' ? "Nodal:" : "नोडल:"} {act.owner})
                       </li>
                     ))}
                   </ul>
@@ -424,11 +480,11 @@ export default function App() {
         <div className="pt-16 flex justify-between text-xs font-bold text-slate-700">
           <div>
             __________________________<br />
-            समीक्षक अधिकारी के हस्ताक्षर
+            {language === 'en' ? "Reviewing Officer's Signature" : "समीक्षक अधिकारी के हस्ताक्षर"}
           </div>
           <div>
             __________________________<br />
-            निदेशक/महानिदेशक सिग्नेचर
+            {language === 'en' ? "Director/DG Signature" : "निदेशक/महानिदेशक सिग्नेचर"}
           </div>
         </div>
       </div>

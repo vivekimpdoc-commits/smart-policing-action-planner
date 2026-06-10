@@ -29,7 +29,10 @@ export interface PrioritySector {
   }[];
 }
 
-export const PRIORITY_SECTORS: PrioritySector[] = [
+import { PRIORITY_SECTORS_EN } from './data_en';
+export { PRIORITY_SECTORS_EN };
+
+export const PRIORITY_SECTORS_HI: PrioritySector[] = [
   {
     id: 1,
     title: "अपराध की रोकथाम, गुणवत्तापूर्ण विवेचना एवं न्याय",

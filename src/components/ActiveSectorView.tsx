@@ -7,6 +7,7 @@ import {
 import { GoogleGenAI } from "@google/genai";
 import { PrioritySector, ActionStep } from "../data";
 import { MarkdownRenderer } from "./MarkdownRenderer";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // Helper to provide realistic default contact details for governmental departments
 export const getFallbackContact = (owner: string) => {
@@ -87,6 +88,8 @@ export function ActiveSectorView({
   generatedStrategies,
   onSaveStrategy
 }: ActiveSectorViewProps) {
+  const { language, t } = useLanguage();
+
   // Tabs: "actions" (SOP Checklist) | "ai-advisor" (AI Advisor) | "pillars" (Pillars)
   const [activeTab, setActiveTab] = useState<"actions" | "ai-advisor" | "pillars">("actions");
 
@@ -94,8 +97,8 @@ export function ActiveSectorView({
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
-  const [newTimeline, setNewTimeline] = useState("तत्काल कदम");
-  const [newOwner, setNewOwner] = useState("एसएचओ / थानाध्यक्ष");
+  const [newTimeline, setNewTimeline] = useState(language === 'en' ? "Immediate Step" : "तत्काल कदम");
+  const [newOwner, setNewOwner] = useState(language === 'en' ? "SHO / Station Head" : "एसएचओ / थानाध्यक्ष");
   const [newPhone, setNewPhone] = useState("");
   const [newEmail, setNewEmail] = useState("");
 
@@ -231,8 +234,8 @@ export function ActiveSectorView({
     // Reset inputs
     setNewTitle("");
     setNewDesc("");
-    setNewTimeline("तत्काल कदम");
-    setNewOwner("एसएचओ / थानाध्यक्ष");
+    setNewTimeline(language === 'en' ? "Immediate Step" : "तत्काल कदम");
+    setNewOwner(language === 'en' ? "SHO / Station Head" : "एसएचओ / थानाध्यक्ष");
     setNewPhone("");
     setNewEmail("");
     setShowAddForm(false);
@@ -334,7 +337,7 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
   const handleCopyStrategy = () => {
     if (!savedStrategyHTML) return;
     navigator.clipboard.writeText(savedStrategyHTML);
-    alert("रणनीति कोड कॉपी कर लिया गया है। इसे आप अपनी डॉक फाइल या ईमेल में पेस्ट कर सकते हैं।");
+    alert(t('copySuccess'));
   };
 
   // Statistics calculation for active sector
@@ -381,9 +384,9 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
       {/* Switch Workspace Tabs */}
       <div className="flex bg-slate-50/80 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 gap-2 flex-shrink-0 pt-3 overflow-x-auto custom-scrollbar">
         {[
-          { id: 'actions', icon: CheckSquare, label: 'राजकीय क्रियान्वयन चेकलिस्ट' },
-          { id: 'ai-advisor', icon: Sparkles, label: 'AI प्रशासनिक रणनीति सहायक' },
-          { id: 'pillars', icon: BookOpen, label: `मुख्य प्रशासनिक स्तंभ (${sector.pillars.length})` }
+          { id: 'actions', icon: CheckSquare, label: t('tabActions') },
+          { id: 'ai-advisor', icon: Sparkles, label: t('tabAiAdvisor') },
+          { id: 'pillars', icon: BookOpen, label: `${t('tabPillars')} (${sector.pillars.length})` }
         ].map(tab => {
           const isActive = activeTab === tab.id;
           const Icon = tab.icon;
@@ -424,7 +427,7 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                 className="flex items-center gap-1 bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-700 hover:text-white px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer shadow-sm"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>नया कार्य जोड़ें</span>
+                <span>{t('addCustomTaskBtn')}</span>
               </button>
             </div>
 
@@ -432,23 +435,23 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
             {showAddForm && (
               <form onSubmit={handleAddSubmit} className="bg-[#fafafa] border border-slate-200 rounded-xl p-4 space-y-3 animate-fadeIn shadow-sm">
                 <h4 className="text-xs font-black text-indigo-700 uppercase tracking-wider">
-                  प्रशासनिक कार्य जोड़ें (Add Custom SOP Step)
+                  {t('addCustomSopTitle')}
                 </h4>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">शीर्षक *</label>
+                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('titleLabel')}</label>
                     <input 
                       type="text" 
                       required
-                      placeholder="जैसे: संवेदनशील बूथों का पुलिस बल द्वारा पैदल मार्च..."
+                      placeholder={t('titlePlaceholder')}
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
                       className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-indigo-600/50"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">जिम्मेदार इकाई *</label>
+                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('responsibleUnitLabel')}</label>
                     <select 
                       required
                       value={newOwner}
@@ -477,20 +480,20 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर (SMS हेतु, ',' से अलग करें, अधिकतम 100)</label>
+                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('phoneLabel')}</label>
                     <input 
                       type="text"
-                      placeholder="जैसे: +91 94544 02099, +91 94544 02088"
+                      placeholder={t('phonePlaceholder')}
                       value={newPhone}
                       onChange={(e) => setNewPhone(e.target.value)}
                       className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-indigo-600/50"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">प्रभारी ईमेल आईडी (Email हेतु, ',' से अलग करें, अधिकतम 100)</label>
+                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('emailLabel')}</label>
                     <input 
                       type="text"
-                      placeholder="जैसे: sho@gov.in, sp-crime@gov.in"
+                      placeholder={t('emailPlaceholder')}
                       value={newEmail}
                       onChange={(e) => setNewEmail(e.target.value)}
                       className="w-full bg-white border border-slate-200 px-3 py-2 rounded-lg text-xs text-slate-850 focus:outline-none focus:border-indigo-600/50"
@@ -499,9 +502,9 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">विस्तृत व्याख्या (विवरण)</label>
+                  <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('descriptionLabel')}</label>
                   <textarea 
-                    placeholder="एसओपी के अंतर्गत किए जाने वाले कार्यों का संक्षिप्त प्रशासनिक विवरण..."
+                    placeholder={t('descriptionPlaceholder')}
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     rows={2}
@@ -511,7 +514,7 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
 
                 <div className="flex items-center justify-between gap-3 pt-1">
                   <div className="flex items-center gap-2">
-                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">समय सीमा:</label>
+                    <label className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('timelineLabel')}</label>
                     <input 
                       type="text" 
                       value={newTimeline}
@@ -526,13 +529,13 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                       onClick={() => setShowAddForm(false)}
                       className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-transparent hover:text-slate-800"
                     >
-                      रद्द करें
+                      {t('cancelBtn')}
                     </button>
                     <button 
                       type="submit" 
                       className="px-3.5 py-1.5 text-xs font-black bg-indigo-700 text-white hover:bg-indigo-600 rounded-lg shadow-sm cursor-pointer"
                     >
-                      सुरक्षित करें
+                      {t('saveBtn')}
                     </button>
                   </div>
                 </div>
@@ -557,7 +560,7 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                       /* Editing form overlay within card */
                       <div className="space-y-3 animate-fadeIn">
                         <div className="flex items-center justify-between pb-1 border-b border-slate-150">
-                          <span className="text-[10px] text-indigo-700 font-extrabold uppercase tracking-wider">SOP संपादित करें</span>
+                          <span className="text-[10px] text-indigo-700 font-extrabold uppercase tracking-wider">{t('editSopTitle')}</span>
                           <button onClick={() => setEditingActionId(null)} className="text-slate-500 hover:text-slate-805 p-1">
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -569,20 +572,20 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
                             className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg text-xs font-bold text-[#0f172a]"
-                            placeholder="कार्य शीर्षक"
+                            placeholder={t('taskTitlePlaceholder')}
                           />
                           <textarea 
                             value={editDesc}
                             onChange={(e) => setEditDesc(e.target.value)}
                             className="w-full bg-slate-50 border border-slate-200 p-2 rounded-lg text-xs text-slate-650"
                             rows={2}
-                            placeholder="कार्य विवरण"
+                            placeholder={t('taskDescPlaceholder')}
                           />
 
                           {/* Contact edit fields inside card */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div className="space-y-0.5">
-                              <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">प्रभारी फ़ोन नम्बर (',' से अलग करें, अधिकतम 100)</span>
+                              <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{t('phoneLabel')}</span>
                               <input 
                                 type="text"
                                 value={editPhone}

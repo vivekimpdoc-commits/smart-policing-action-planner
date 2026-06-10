@@ -1,6 +1,7 @@
 import React from "react";
 import * as LucideIcons from "lucide-react";
 import { PrioritySector } from "../data";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface PriorityListProps {
   sectors: PrioritySector[];
@@ -9,6 +10,8 @@ interface PriorityListProps {
 }
 
 export function PriorityList({ sectors, activeId, onSelectSector }: PriorityListProps) {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-white rounded-2xl p-5 select-none text-slate-900 h-full flex flex-col shadow-sm border border-slate-200">
       {/* Title block */}
@@ -18,10 +21,10 @@ export function PriorityList({ sectors, activeId, onSelectSector }: PriorityList
         </div>
         <div>
           <h3 className="text-sm font-bold text-slate-900 tracking-wide leading-tight py-1 -my-1">
-            10 राष्ट्रीय प्राथमिकता क्षेत्र
+            {t('priorityListTitle')}
           </h3>
           <span className="text-[10px] text-slate-500 font-semibold block uppercase mt-1">
-            National Priority Matrix
+            {t('priorityListSubtitle')}
           </span>
         </div>
       </div>

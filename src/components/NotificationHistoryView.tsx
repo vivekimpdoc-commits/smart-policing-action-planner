@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as LucideIcons from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export interface NotificationRecord {
   id: string;
@@ -14,6 +15,7 @@ export interface NotificationRecord {
 
 export function NotificationHistoryView() {
   const [history, setHistory] = useState<NotificationRecord[]>([]);
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     // Load history from local storage
@@ -42,7 +44,7 @@ export function NotificationHistoryView() {
 
   const handleDownloadCSV = () => {
     if (history.length === 0) {
-      alert("No data to download!");
+      alert(t('noDataAlert'));
       return;
     }
 
@@ -85,9 +87,9 @@ export function NotificationHistoryView() {
         <div>
           <h2 className="text-xl sm:text-2xl font-serif font-black italic bg-gradient-to-r from-indigo-900 to-purple-800 bg-clip-text text-transparent flex items-center gap-2 tracking-tight">
             <LucideIcons.History className="w-6 h-6 text-indigo-600" />
-            संसूचना प्रेषण इतिहास <span className="text-slate-500 font-sans not-italic text-sm font-medium ml-2">(Notification Logs)</span>
+            {t('notificationHistoryTitle')} <span className="text-slate-500 font-sans not-italic text-sm font-medium ml-2">(Notification Logs)</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1 font-bold tracking-wide">अब तक भेजे गए सभी प्रशासनिक आदेशों और संदेशों का विवरण।</p>
+          <p className="text-xs text-slate-500 mt-1 font-bold tracking-wide">{t('notificationHistorySubtitle')}</p>
         </div>
         
         <button
@@ -95,7 +97,7 @@ export function NotificationHistoryView() {
           className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-400 text-white px-5 py-2.5 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all"
         >
           <LucideIcons.Download className="w-4 h-4" />
-          एक्सेल में डाउनलोड करें 📊
+          {t('downloadExcelBtn')} 📊
         </button>
       </div>
 

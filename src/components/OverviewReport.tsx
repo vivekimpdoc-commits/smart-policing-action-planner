@@ -2,6 +2,7 @@ import React from "react";
 import * as LucideIcons from "lucide-react";
 import { PrioritySector } from "../data";
 import { NotificationHistoryView } from "./NotificationHistoryView";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface OverviewReportProps {
   sectors: PrioritySector[];
@@ -10,6 +11,8 @@ interface OverviewReportProps {
 }
 
 export function OverviewReport({ sectors, onSelectSector, overallProgress }: OverviewReportProps) {
+  const { language, t } = useLanguage();
+  
   return (
     <div className="space-y-8 select-none p-2 sm:p-4 lg:p-6 text-slate-900 relative overflow-hidden animate-fadeIn">
       {/* Grand Title Info - Premium Banner */}
@@ -25,31 +28,31 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
             </span>
-            लाइव मॉनिटरिंग सिस्टम
+            {t('liveMonitoringSystem')}
           </div>
           <h2 className="text-2xl sm:text-3xl font-serif italic bg-gradient-to-r from-slate-900 to-indigo-900 bg-clip-text text-transparent tracking-tight flex items-center gap-3 drop-shadow-sm pr-2 py-1">
             <LucideIcons.LayoutDashboard className="w-8 h-8 text-indigo-600 drop-shadow-sm" />
-            समग्र प्रशासनिक रिपोर्ट कार्ड 
+            {t('reportTitle')}
           </h2>
           <p className="text-slate-600 text-sm leading-relaxed font-medium">
-            यह डै‍शबोर्ड राज्य पुलिस की 10 महत्वपूर्ण प्राथमिकताओं के विरुद्ध जारी क्रियान्वयन प्रगति का एक लाइव संकलित प्रिफेक्टर प्रस्तुत करता है। नीचे प्रत्येक विषय के अंतर्गत निहित 5 बुनियादी सरकारी दिशानिर्देशों (कुल 50 योजनाएं) की वर्तमान स्थिति दर्ज है।
+            {t('reportSubtitle')}
           </p>
         </div>
 
         <div className="bg-white/80 backdrop-blur-md border border-slate-200/60 p-5 rounded-2xl flex items-center gap-6 flex-shrink-0 shadow-sm relative z-10">
           <div className="space-y-1 text-center">
             <span className="text-[10px] text-slate-500 block uppercase font-extrabold tracking-wider">
-              कुल स्वीकृत लक्ष्य
+              {t('totalApprovedTargets')}
             </span>
             <span className="text-2xl font-black font-mono bg-gradient-to-br from-emerald-500 to-emerald-600 bg-clip-text text-transparent">50 SOPs</span>
           </div>
           <div className="w-px h-12 bg-slate-200" />
           <div className="space-y-1 text-center">
             <span className="text-[10px] text-slate-500 block uppercase font-extrabold tracking-wider">
-              राज्य पुलिस रेटिंग
+              {t('statePoliceRating')}
             </span>
             <span className="text-lg sm:text-xl font-bold bg-gradient-to-br from-indigo-600 to-blue-600 bg-clip-text text-transparent font-serif italic">
-              {overallProgress >= 75 ? "उत्कृष्ट (A+)" : overallProgress >= 40 ? "संतोषजनक (B)" : "विशेष सुदृढीकरण क्षेत्र"}
+              {overallProgress >= 75 ? t('ratingExcellent') : overallProgress >= 40 ? t('ratingSatisfactory') : t('ratingNeedsImprovement')}
             </span>
           </div>
         </div>
@@ -87,7 +90,7 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
                     </div>
                     <div>
                       <div className="text-[10px] uppercase font-black text-indigo-500 tracking-wider font-mono mb-1">
-                        सेक्टर #{sector.id}
+                        {t('sectorId')} #{sector.id}
                       </div>
                       <h3 className="text-base sm:text-lg font-serif italic text-slate-800 group-hover:text-indigo-700 transition-colors leading-tight">
                         {sector.title}
@@ -113,7 +116,7 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
                 {/* Miniature Action Completed list */}
                 <div className="space-y-2 pt-2">
                   <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <span>प्रगति (Progress)</span>
+                    <span>{t('progress')}</span>
                     <span className="font-mono text-indigo-600">{completedActions} / {totalActions}</span>
                   </div>
                   <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/80">
@@ -138,7 +141,7 @@ export function OverviewReport({ sectors, onSelectSector, overallProgress }: Ove
               <div
                 className="mt-6 w-full py-3 rounded-xl border border-indigo-100 bg-slate-50/50 group-hover:bg-indigo-600 text-slate-600 group-hover:text-white font-black text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:border-indigo-600"
               >
-                <span>विस्तृत रणनीति खोलें</span>
+                <span>{t('openStrategyBtn')}</span>
                 <LucideIcons.ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>

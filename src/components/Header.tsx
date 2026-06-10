@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ShieldAlert, Landmark, Printer, BarChart3, RotateCcw, Database, Info, X, Target, CheckCircle2, Zap } from "lucide-react";
+import { ShieldAlert, Landmark, Printer, BarChart3, RotateCcw, Database, Info, X, Target, CheckCircle2, Zap, Languages } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface HeaderProps {
   overallProgress: number;
@@ -19,6 +20,7 @@ export function Header({
   isSupabaseConnected
 }: HeaderProps) {
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <>
@@ -33,7 +35,7 @@ export function Header({
 
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight tracking-tight">
-                स्मार्ट पुलिसिंग कार्ययोजना <span className="text-indigo-600 font-extrabold ml-1 text-base sm:text-lg">व नीति योजनाकार</span>
+                {t('appTitlePart1')} <span className="text-indigo-600 font-extrabold ml-1 text-base sm:text-lg">{t('appTitlePart2')}</span>
               </h1>
             </div>
           </div>
@@ -44,7 +46,7 @@ export function Header({
             <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-3.5 shadow-sm">
               <div className="text-right">
                 <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">
-                  कुल क्रियान्वयन इंडेक्स
+                  {t('totalIndex')}
                 </div>
                 <div className="text-sm font-black font-mono text-indigo-600">{overallProgress}%</div>
               </div>
@@ -59,12 +61,21 @@ export function Header({
             {/* Action buttons */}
             <div className="flex items-center gap-2">
               <button
+                onClick={() => setLanguage(language === 'hi' ? 'en' : 'hi')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-indigo-600 transition-all cursor-pointer shadow-sm"
+                title={language === 'hi' ? "Switch to English" : "हिंदी में बदलें"}
+              >
+                <Languages className="w-4 h-4" />
+                <span className="hidden sm:inline">{language === 'hi' ? 'EN' : 'HI'}</span>
+              </button>
+
+              <button
                 onClick={() => setShowAboutModal(true)}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
-                title="प्रोजेक्ट के बारे में जानें"
+                title={t('projectInfoTooltip')}
               >
                 <Info className="w-4 h-4" />
-                <span className="hidden sm:inline">प्रोजेक्ट इन्फो</span>
+                <span className="hidden sm:inline">{t('projectInfoBtn')}</span>
               </button>
 
               <button
@@ -74,25 +85,25 @@ export function Header({
                     ? "bg-indigo-600 text-white border-indigo-600 shadow-md hover:bg-indigo-700"
                     : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-slate-900 shadow-sm"
                 }`}
-                title={viewMode === "dashboard" ? "सभी 10 योजनाओं का ओवरव्यू देखें" : "दैनिक कंसोल पर लौटें"}
+                title={viewMode === "dashboard" ? t('dashboardTooltip') : t('consoleTooltip')}
               >
                 <BarChart3 className="w-4 h-4" />
-                <span>{viewMode === "dashboard" ? "प्रगति डैशबोर्ड" : "प्रशासनिक कंसोल"}</span>
+                <span className="hidden sm:inline">{viewMode === "dashboard" ? t('progressDashboardBtn') : t('adminConsoleBtn')}</span>
               </button>
 
               <button
                 onClick={onPrint}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer shadow-sm"
-                title="कार्ययोजना प्रिंट करें या पीडीएफ सहेजें"
+                title={t('printTooltip')}
               >
                 <Printer className="w-4 h-4" />
-                <span className="hidden sm:inline">प्रिंट / PDF</span>
+                <span className="hidden sm:inline">{t('printBtn')}</span>
               </button>
 
               <button
                 onClick={onReset}
                 className="p-2 rounded-xl text-slate-500 border border-slate-200 bg-white hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all cursor-pointer shadow-sm"
-                title="सभी बदलाव रीसेट करें"
+                title={t('resetTooltip')}
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
@@ -123,8 +134,8 @@ export function Header({
                   <Target className="w-8 h-8 text-indigo-100" />
                 </div>
                 <div className="space-y-1 mt-1">
-                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight">स्मार्ट पुलिसिंग एक्शन प्लानर</h2>
-                  <p className="text-sm text-indigo-100/90 font-medium tracking-wide uppercase">परियोजना का उद्देश्य एवं आवश्यकता</p>
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{t('modalTitle')}</h2>
+                  <p className="text-sm text-indigo-100/90 font-medium tracking-wide uppercase">{t('modalSubtitle')}</p>
                 </div>
               </div>
             </div>
@@ -133,53 +144,43 @@ export function Header({
             <div className="p-6 sm:p-8 space-y-8 text-slate-700 bg-slate-50/50">
               
               <div className="space-y-3 text-sm sm:text-base leading-relaxed">
-                <p>
-                  यह ऐप्लीकेशन <strong className="text-slate-900">राष्ट्रीय पुलिसिंग प्राथमिकताओं (National Policing Priorities)</strong> को ध्यान में रखकर बनाया गया एक आधुनिक प्रशासनिक उपकरण है। इसका मुख्य उद्देश्य पुलिस बलों की कार्यक्षमता (Efficiency) और जवाबदेही (Accountability) को डिजिटल और AI तकनीक के माध्यम से बढ़ाना है।
-                </p>
+                <p>{t('modalP1')}</p>
               </div>
 
               <div className="space-y-5">
-                <h3 className="text-sm font-black text-indigo-800 uppercase tracking-widest border-b border-indigo-100 pb-2">इस सिस्टम की आवश्यकता क्यों है?</h3>
+                <h3 className="text-sm font-black text-indigo-800 uppercase tracking-widest border-b border-indigo-100 pb-2">{t('modalQ')}</h3>
                 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="bg-blue-50 p-2 rounded-lg"><Zap className="w-5 h-5 text-blue-600" /></div>
-                      <h4 className="font-bold text-slate-900">त्वरित एवं डेटा-आधारित निर्णय</h4>
+                      <h4 className="font-bold text-slate-900">{t('modalR1T')}</h4>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      आपातकालीन स्थितियों या रूटीन गश्त में, AI रणनीति सलाहकार के माध्यम से अधिकारी तुरंत एक कस्टमाइज़्ड SOP (Standard Operating Procedure) प्राप्त कर सकते हैं, जिससे फैसले लेने में देरी नहीं होती।
-                    </p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{t('modalR1D')}</p>
                   </div>
 
                   <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="bg-emerald-50 p-2 rounded-lg"><CheckCircle2 className="w-5 h-5 text-emerald-600" /></div>
-                      <h4 className="font-bold text-slate-900">स्पष्ट जवाबदेही (Accountability)</h4>
+                      <h4 className="font-bold text-slate-900">{t('modalR2T')}</h4>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      हर कार्य (Task) किसी विशिष्ट अधिकारी (SHO, SP आदि) को असाइन किया जाता है। चेकलिस्ट सिस्टम से यह सुनिश्चित होता है कि कोई भी महत्वपूर्ण प्रशासनिक कदम छूटे नहीं।
-                    </p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{t('modalR2D')}</p>
                   </div>
 
                   <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="bg-purple-50 p-2 rounded-lg"><ShieldAlert className="w-5 h-5 text-purple-600" /></div>
-                      <h4 className="font-bold text-slate-900">नागरिक सुरक्षा एवं भरोसा</h4>
+                      <h4 className="font-bold text-slate-900">{t('modalR3T')}</h4>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      10 मुख्य राष्ट्रीय प्राथमिकता क्षेत्रों (जैसे महिला सुरक्षा, साइबर अपराध, आदि) पर विशेष ध्यान केंद्रित करके, यह सिस्टम पुलिस को अधिक जन-केंद्रित और प्रभावी बनाता है।
-                    </p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{t('modalR3D')}</p>
                   </div>
 
                   <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="bg-orange-50 p-2 rounded-lg"><BarChart3 className="w-5 h-5 text-orange-600" /></div>
-                      <h4 className="font-bold text-slate-900">केंद्रीकृत मॉनिटरिंग (Dashboard)</h4>
+                      <h4 className="font-bold text-slate-900">{t('modalR4T')}</h4>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      "कुल क्रियान्वयन इंडेक्स" और प्रोग्रेस रिपोर्ट के ज़रिए उच्च अधिकारी (DGP, IG) एक ही नज़र में पूरे जिले या ज़ोन की कानून-व्यवस्था की स्थिति को ट्रैक कर सकते हैं।
-                    </p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{t('modalR4D')}</p>
                   </div>
                 </div>
               </div>
@@ -192,7 +193,7 @@ export function Header({
                 onClick={() => setShowAboutModal(false)}
                 className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg cursor-pointer"
               >
-                समझ गया (Close)
+                {t('closeBtn')}
               </button>
             </div>
 
