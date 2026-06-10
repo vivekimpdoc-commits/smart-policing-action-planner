@@ -343,73 +343,29 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
   const progressPercent = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
 
   return (
-    <div className="glass-panel rounded-3xl select-none text-slate-900 overflow-hidden flex flex-col h-full min-h-[600px] relative animate-fadeIn">
+    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl select-none text-slate-900 overflow-hidden flex flex-col h-full min-h-[600px] relative animate-fadeIn">
       
-      {/* Decorative Blue/Golden Corner lines */}
-      <div className="absolute top-0 right-0 p-4 pointer-events-none select-none z-10">
-        <div className="w-16 h-16 border-r-2 border-t-2 border-indigo-500/20 rounded-tr-2xl"></div>
-      </div>
-
       {/* Active Sector Banner Section */}
-      <div className="bg-white/40 p-5 sm:p-7 border-b border-white/50 backdrop-blur-md">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-[10px] text-indigo-700 font-extrabold uppercase tracking-widest bg-white/60 border border-indigo-200 shadow-sm px-2.5 py-1 rounded-lg inline-block mb-1">
-              कार्ययोजना सेक्टर #{sector.id}
-            </span>
-            <h2 className="text-lg sm:text-2xl font-serif font-bold bg-gradient-to-r from-indigo-900 via-indigo-700 to-purple-800 bg-clip-text text-transparent mt-1.5 tracking-tight flex items-center gap-2 py-1 pr-2 drop-shadow-sm leading-snug">
-              {sector.title}
-            </h2>
-            <p className="text-[10px] text-slate-500 font-mono font-bold tracking-widest mt-0.5 uppercase">
-              {sector.englishTitle}
-            </p>
-          </div>
-
-          <div className="glass-panel p-3 rounded-2xl flex items-center gap-3.5 flex-shrink-0 z-20 shadow-lg shadow-indigo-900/5">
-            <div className="text-right">
-              <span className="text-[9px] text-slate-500 uppercase font-black block tracking-widest">
-                लक्ष्य पूरा इंडेक्स
-              </span>
-              <span className={`text-base font-mono font-black ${progressPercent === 100 ? "text-emerald-500" : "text-indigo-600"}`}>
-                {progressPercent}%
-              </span>
-            </div>
-            <div className="w-12 h-12 relative flex items-center justify-center">
-              <svg className="w-12 h-12 transform -rotate-90 filter drop-shadow-md">
-                <circle cx="24" cy="24" r="18" className="text-slate-200/50" strokeWidth="3" fill="transparent" stroke="currentColor"/>
-                <circle cx="24" cy="24" r="18" 
-                  className={progressPercent === 100 ? "text-emerald-500" : "text-indigo-600"} 
-                  strokeWidth="3.5" 
-                  fill="transparent" 
-                  strokeDasharray={113}
-                  strokeDashoffset={113 - (progressPercent * 1.13)}
-                  strokeLinecap="round"
-                  stroke="url(#gradient)"
-                 />
-                 <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#4f46e5" />
-                    <stop offset="100%" stopColor="#9333ea" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-          </div>
+      <div className="p-5 sm:p-7 border-b border-slate-100 flex items-center justify-between">
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+          {sector.title}
+        </h2>
+        <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+          <span className="text-xs font-semibold text-slate-500 uppercase">Progress</span>
+          <span className={`text-sm font-bold ${progressPercent === 100 ? "text-emerald-600" : "text-indigo-600"}`}>
+            {progressPercent}%
+          </span>
         </div>
-
-        <p className="text-slate-700 font-medium text-sm leading-relaxed mt-5 bg-white/60 p-4 rounded-2xl border border-white/80 shadow-[0_2px_10px_rgba(0,0,0,0.02)] backdrop-blur-sm">
-          {sector.description}
-        </p>
       </div>
 
       {/* Switch Workspace Tabs */}
-      <div className="flex bg-white/40 border-b border-white/50 px-3 gap-2 flex-shrink-0 pt-2">
+      <div className="flex bg-white border-b border-slate-200 px-4 gap-4 flex-shrink-0 pt-2">
         <button
           onClick={() => setActiveTab("actions")}
-          className={`px-5 py-3 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer rounded-t-xl ${
+          className={`px-2 py-3 text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer border-b-2 ${
             activeTab === "actions"
-              ? "bg-white/80 text-indigo-700 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] border-t border-x border-white/80"
-              : "text-slate-500 hover:text-indigo-600 hover:bg-white/50"
+              ? "border-indigo-600 text-indigo-700"
+              : "border-transparent text-slate-500 hover:text-indigo-600 hover:border-indigo-200"
           }`}
         >
           <CheckSquare className="w-4 h-4" />
@@ -418,10 +374,10 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
 
         <button
           onClick={() => setActiveTab("ai-advisor")}
-          className={`px-5 py-3 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer rounded-t-xl ${
+          className={`px-2 py-3 text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer border-b-2 ${
             activeTab === "ai-advisor"
-              ? "bg-white/80 text-indigo-700 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] border-t border-x border-white/80"
-              : "text-slate-500 hover:text-indigo-600 hover:bg-white/50"
+              ? "border-indigo-600 text-indigo-700"
+              : "border-transparent text-slate-500 hover:text-indigo-600 hover:border-indigo-200"
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -430,10 +386,10 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
 
         <button
           onClick={() => setActiveTab("pillars")}
-          className={`px-5 py-3 text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer rounded-t-xl ${
+          className={`px-2 py-3 text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer border-b-2 ${
             activeTab === "pillars"
-              ? "bg-white/80 text-indigo-700 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] border-t border-x border-white/80"
-              : "text-slate-500 hover:text-indigo-600 hover:bg-white/50"
+              ? "border-indigo-600 text-indigo-700"
+              : "border-transparent text-slate-500 hover:text-indigo-600 hover:border-indigo-200"
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -449,14 +405,9 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
           <div className="space-y-4">
             
             <div className="flex items-center justify-between gap-4 pb-2">
-              <div>
-                <h3 className="font-extrabold text-sm text-slate-800">
-                  प्रस्तावित बुनियादी विभागीय जिम्मेदारियां (Operational Targets)
-                </h3>
-                <p className="text-[10px] text-indigo-700 font-extrabold block uppercase mt-0.5 tracking-wider">
-                  SOP Checklist & Add-ons
-                </p>
-              </div>
+              <h3 className="font-bold text-base text-slate-800">
+                Tasks
+              </h3>
 
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
@@ -586,10 +537,10 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                 return (
                   <div 
                     key={action.id}
-                    className={`glass-card-interactive rounded-2xl p-5 mb-4 ${
+                    className={`bg-white border border-slate-200 shadow-sm rounded-xl p-4 mb-3 transition-colors ${
                       action.completed 
-                        ? "bg-white/40 border-white/30 opacity-75" 
-                        : "bg-white/70 border-white/60"
+                        ? "bg-slate-50 opacity-75" 
+                        : "hover:border-indigo-200"
                     }`}
                   >
                     {isEditing ? (
@@ -742,77 +693,24 @@ ${localDetails ? `- **स्थानीय इनपुट पर कार्�
                             </div>
                           </div>
 
-                          <p className={`text-xs leading-relaxed ${
-                            action.completed ? "text-slate-600" : "text-slate-600"
-                          }`}>
-                            {action.description}
-                          </p>
-
-                          {/* Secondary facts row */}
-                          <div className="flex flex-wrap items-center gap-2.5 pt-1 text-[11px] font-bold text-slate-600">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3.5 h-3.5 text-slate-600" />
-                              <span className="text-slate-600 font-medium">अनुमानित लक्ष्य:</span>
-                              <span className="text-indigo-700 font-extrabold">{action.timeline}</span>
-                            </span>
-                            <span className="text-slate-800 font-normal opacity-40">•</span>
-                            <span className="flex items-center gap-1">
-                              <Scale className="w-3.5 h-3.5 text-slate-600" />
-                              <span className="text-slate-600 font-medium pb-px">नोडल विभाग / प्रभारी:</span>
-                              <span className="text-slate-750 font-black">{action.owner}</span>
-                            </span>
-                            <span className="text-slate-800 font-normal opacity-40">•</span>
-                            <button
-                              onClick={() => {
-                                const fb = getFallbackContact(action.owner);
-                                triggerNotification(
-                                  action.title,
-                                  action.owner,
-                                  action.ownerPhone || fb.phone,
-                                  action.ownerEmail || fb.email,
-                                  action.timeline
-                                );
-                              }}
-                              className="flex items-center gap-1 justify-center bg-indigo-50/80 text-indigo-700 border border-indigo-200 hover:bg-indigo-700 hover:text-white px-2 py-0.5 rounded text-[10px] font-black transition-all cursor-pointer h-5.5 shadow-xs"
-                              title="प्रभारी को संदेश प्रेषित करें"
-                            >
-                              <span>संसूचना भेजें 📱</span>
-                            </button>
-                          </div>
-
-                          {/* Contact Info Details row */}
-                          <div className="text-[10px] font-mono text-slate-500 bg-[#fafafa] hover:bg-slate-100 border border-slate-200/50 p-2 rounded-lg flex flex-col gap-1.5 w-fit transition-colors">
-                            {/* Phones list */}
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mr-1">फोन:</span>
-                              {(action.ownerPhone || getFallbackContact(action.owner).phone)
-                                .split(",")
-                                .map(p => p.trim())
-                                .filter(Boolean)
-                                .slice(0, 100)
-                                .map((phone, idx) => (
-                                  <span key={idx} className="flex items-center gap-1 font-semibold text-indigo-750 bg-indigo-50/50 px-1.5 py-0.5 rounded border border-indigo-200/30">
-                                    <Phone className="w-2.5 h-2.5 text-indigo-700" /> 
-                                    <span>{phone}</span>
-                                  </span>
-                                ))}
+                          {/* Hidden details expander */}
+                          <details className="mt-2 text-xs text-slate-500 group/details">
+                            <summary className="cursor-pointer text-indigo-500 font-medium select-none outline-none">Show Details</summary>
+                            <div className="mt-3 bg-slate-50 rounded-lg p-3 border border-slate-100 space-y-2">
+                              <p className="text-slate-600 leading-relaxed text-[13px]">{action.description}</p>
+                              
+                              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 pt-2 border-t border-slate-200/60 mt-2">
+                                <div className="flex items-center gap-1.5" title="अनुमानित समय सीमा">
+                                  <Calendar className="w-3.5 h-3.5" />
+                                  <span>{action.timeline}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5" title="जिम्मेदार अधिकारी / विभाग">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-orange-400" />
+                                  <span>{action.owner}</span>
+                                </div>
+                              </div>
                             </div>
-                            {/* Emails list */}
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-0.5 border-t border-slate-200/40 pt-1">
-                              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mr-1">ईमेल:</span>
-                              {(action.ownerEmail || getFallbackContact(action.owner).email)
-                                .split(",")
-                                .map(e => e.trim())
-                                .filter(Boolean)
-                                .slice(0, 100)
-                                .map((email, idx) => (
-                                  <span key={idx} className="flex items-center gap-1 font-semibold text-indigo-755 bg-indigo-50/50 px-1.5 py-0.5 rounded border border-indigo-200/30">
-                                    <Mail className="w-2.5 h-2.5 text-indigo-700" /> 
-                                    <span>{email}</span>
-                                  </span>
-                                ))}
-                            </div>
-                          </div>
+                          </details>
                         </div>
                       </div>
                     )}
